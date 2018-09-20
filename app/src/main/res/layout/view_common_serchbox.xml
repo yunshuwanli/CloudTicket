@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EditText xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/comm_serchbox_edittext"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="5dp"
+    android:hint="请输入车牌号码"
+    android:textColorHint="@color/tv_text_main2"
+    android:background="@drawable/m_view_common_serchbox_bg"
+    android:drawableLeft="@mipmap/ic_serch"
+    android:inputType="text"
+    android:textColor="#FF484848"
+    android:drawablePadding="10dp"
+    android:cursorVisible="true"
+    android:textCursorDrawable="@null" />

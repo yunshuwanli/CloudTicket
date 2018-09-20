@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string-array name="city_simple">
+        <item>京</item>
+        <item>津</item>
+        <item>沪</item>
+        <item>渝</item>
+    </string-array>
+
+
+</resources>

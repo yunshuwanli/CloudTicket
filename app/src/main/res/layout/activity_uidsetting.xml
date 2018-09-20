@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_bg"
+    android:orientation="vertical"
+    tools:context=".acitivity.UIDSettingActivity">
+
+    <EditText
+        android:id="@+id/et_uid"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:textColor="@color/tv_text_main"
+        android:paddingLeft="5dp"
+        android:background="@drawable/common_et_bg"
+        android:hint="请输入设备ID"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/btn_selector_main"
+        android:text="确定"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="84dp" />
+</LinearLayout>

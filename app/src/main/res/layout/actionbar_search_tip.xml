@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginRight="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/actionbar_search_tip_bg"
+        android:gravity="center_vertical"
+        android:padding="10dp">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/actionbar_search_tip_icon"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_alignParentRight="true"
+            app:srcCompat="@drawable/ic_search" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/actionbar_search_tip_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="请输入车牌号码查询" />
+    </RelativeLayout>
+</LinearLayout>
