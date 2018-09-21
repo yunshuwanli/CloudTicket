@@ -42,6 +42,7 @@ import java.util.concurrent.Callable;
 import yswl.com.klibrary.MApplication;
 import yswl.com.klibrary.base.MActivity;
 import yswl.com.klibrary.http.CallBack.HttpCallback;
+import yswl.com.klibrary.http.CallBack.OrderHttpCallBack;
 import yswl.com.klibrary.http.HttpClientProxy;
 import yswl.com.klibrary.http.okhttp.MSPUtils;
 import yswl.com.klibrary.util.EmptyRecyclerView;
@@ -49,8 +50,10 @@ import yswl.com.klibrary.util.GsonUtil;
 import yswl.com.klibrary.util.L;
 import yswl.com.klibrary.util.ToastUtil;
 
-public class MainActivity extends MActivity implements View.OnClickListener, HttpCallback<JSONObject> {
+public class MainActivity extends MActivity implements View.OnClickListener, OrderHttpCallBack {
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final int HTTP_REQUEST_ID = -1;
 
     public static void JumpAct(Activity context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -71,20 +74,32 @@ public class MainActivity extends MActivity implements View.OnClickListener, Htt
         items.add("系统信息");
     }
 
+    private OrderDao dao;
     List<OrderInfo> ondayOrders;
-    OrderInfo info;
+    private volatile OrderInfo info;
     IDAL idal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //开启进程保活
+        startService(new Intent(getApplicationContext(), DaemonService.class));
         initView();
-
-
         initPrinter();
         initTimer();
+        initDataBase();
 
+    }
+
+    private void initDataBase() {
+        dao = new OrderDao(this);
+    }
+
+    private OrderDao getDao() {
+        if (dao == null)
+            dao = new OrderDao(this);
+        return dao;
     }
 
     private void initPrinter() {
@@ -125,21 +140,25 @@ public class MainActivity extends MActivity implements View.OnClickListener, Htt
         L.i("打印完成状态：" + status);
     }
 
-    int i=0;
+    int i = 100;
+
+    //模拟订单生成
     void initTimer() {
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 //TODO TEST DATA
-                info = new OrderInfo("o112132"+i, 10.00, "2018-09-20 12:00:00", "asdas");
+                info = new OrderInfo("o112132" + i,
+                        30.00+i, "2018-09-21 00:00:00", "HHHHHH");
                 i++;
-                requestSaveOrderInfo(info);
+                requestSaveOrderInfo(info, false);
             }
-        }, 5000, 1000000);
+        }, 5000, 1000*10);
 
 
     }
+
 
     private void initView() {
         refreshLayout = findViewById(R.id.refreshLayout);
@@ -167,23 +186,34 @@ public class MainActivity extends MActivity implements View.OnClickListener, Htt
         findViewById(R.id.billing).setOnClickListener(this);
         findViewById(R.id.iv_menu).setOnClickListener(this);
         findViewById(R.id.search).setOnClickListener(this);
-        //开启进程保活
-        startService(new Intent(getApplicationContext(), DaemonService.class));
+
     }
 
     private void loadData() {
-
-        MainActivity.this.runOnUiThread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                ondayOrders = new OrderDao(MainActivity.this).queryOrderOfTime(2);
+                ondayOrders = new OrderDao(MainActivity.this).queryOrderOfTime(3);
                 L.e(TAG, "data size: " + ondayOrders.size());
-                count.setText(ondayOrders.size() + "");
-                price.setText(getTotalAmo(ondayOrders) + "");
-                refreshLayout.finishRefresh();
-                adapter.setList(ondayOrders);
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        count.setText(ondayOrders.size() + "");
+                        price.setText(getTotalAmo(ondayOrders) + "");
+                        refreshLayout.finishRefresh();
+                        adapter.setList(ondayOrders);
+                    }
+                });
+                OrderDao dao = new OrderDao(MainActivity.this);
+                List<OrderInfo> failOrders = dao.queryOrderInfoUpdataFail();
+                if (failOrders != null && failOrders.size() > 0) {
+                    for (OrderInfo fail : failOrders) {
+                        requestSaveOrderInfo(fail, true);
+                    }
+                }
             }
-        });
+        }).start();
+
 
     }
 
@@ -195,7 +225,7 @@ public class MainActivity extends MActivity implements View.OnClickListener, Htt
         return total;
     }
 
-    private void requestSaveOrderInfo(OrderInfo orderInfo) {
+    private void requestSaveOrderInfo(OrderInfo orderInfo, boolean isFailData) {
         if (orderInfo == null) return;
         final String url = "http://test.datarj.com/webService/kptService";
         Map<String, Object> data = new HashMap<>();
@@ -214,38 +244,9 @@ public class MainActivity extends MActivity implements View.OnClickListener, Htt
         params.put("sign", SignUtil.getSignStr(data));
         params.put("data", data);
         String param = GsonUtil.GsonString(params);
-        HttpClientProxy.getInstance().postJSONAsyn(url, 1, param, this);
+        int requestId = isFailData ? orderInfo.getId() : HTTP_REQUEST_ID;
+        HttpClientProxy.getInstance().postJsonAsynAndParams(url, requestId, param, orderInfo, this);
     }
-
-
-    @Override
-    public void onSucceed(int requestId, JSONObject result) {
-
-        if (requestId == 1 && result != null) {
-                if (result.optString("code").equalsIgnoreCase("0000")) {
-                    //TODO 上传成功
-                    OrderDao dao = new OrderDao(this);
-                    dao.add(info);
-                } else {
-                    String errInfo = result.optString("msg");
-                    //TODO 日志埋点
-                    //logutil
-                    ToastUtil.showToast(errInfo);
-                    //TODO TEST
-                    OrderDao dao = new OrderDao(this);
-                    dao.add(info);
-                }
-
-        }
-    }
-
-
-    @Override
-    public void onFail(int requestId, String errorMsg) {
-        //TODO 日志埋点
-        //logutil
-    }
-
 
     @Override
     public void onClick(View v) {
@@ -295,5 +296,97 @@ public class MainActivity extends MActivity implements View.OnClickListener, Htt
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.addCategory(Intent.CATEGORY_HOME);
         startActivity(i);
+    }
+
+    @Override
+    public void onSucceed(int requestId, JSONObject result, Object o) {
+        if (requestId == HTTP_REQUEST_ID) {
+            if (result != null) {
+                if (result.optString("code").equalsIgnoreCase("0000")) {
+                    saveDataBase(o, true);
+
+                } else {
+                    String errInfo = result.optString("msg");
+                    //TODO 日志埋点
+                    //logutil
+                    ToastUtil.showToast(errInfo);
+                    saveDataBase(o, false);
+                }
+            }
+
+        } else {//失败的数据
+            if (result != null && result.optString("code").equalsIgnoreCase("0000")) {
+                updataDataBase(o, true);
+            } else {
+                String errInfo = result.optString("msg");
+                //TODO 日志埋点
+            }
+        }
+    }
+
+    private void saveDataBase(Object o, boolean statue) {
+        if (o instanceof OrderInfo) {
+            OrderInfo info = (OrderInfo) o;
+            info.setUpdate(statue);
+            getDao().add(info);
+        }
+        updateRecyleViewData(o);
+    }
+
+    private synchronized void updateRecyleViewData(Object o) {
+        if (o instanceof OrderInfo) {
+            OrderInfo info = (OrderInfo) o;
+            if (adapter != null && recyclerView!=null){
+                adapter.addItem(info);
+                adapter.notifyItemInserted(0);
+                recyclerView.scrollToPosition(0);
+
+            }
+
+            if (count != null) {
+                int currCount = Integer.valueOf(count.getText().toString());
+                currCount++;
+                count.setText(String.valueOf(currCount));
+            }
+
+            if (price != null) {
+                double curprice = Double.valueOf(price.getText().toString());
+                curprice = curprice+info.getTotalAmount();
+                price.setText(String.valueOf(curprice));
+            }
+
+
+        }
+    }
+
+    private void updataDataBase(Object o, boolean statue) {
+        if (o instanceof OrderInfo) {
+            OrderInfo info = (OrderInfo) o;
+            info.setUpdate(statue);
+            getDao().updata(info);
+        }
+    }
+
+    @Override
+    public void onFail(int requestId, String errorMsg, Object o) {
+        ToastUtil.showToast("网络错误");
+        if (requestId == HTTP_REQUEST_ID) {
+            saveDataBase(o, false);
+        } else {
+            //donothing
+        }
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //删除30天之前的数据
+        List<OrderInfo> list = getDao().queryOrderNDayBefore(30);
+        if (list != null && list.size() > 0) {
+            getDao().deleteNDayBefore(30);
+        }
+
     }
 }

@@ -50,6 +50,11 @@ public class OrderInfo implements Parcelable {
     @DatabaseField(generatedId = true)
     private int id; //
 
+    //数据库自增长id 也作为requestId
+    public int getId() {
+        return id;
+    }
+
     @DatabaseField
     private String orderNo;//订单号
     @DatabaseField

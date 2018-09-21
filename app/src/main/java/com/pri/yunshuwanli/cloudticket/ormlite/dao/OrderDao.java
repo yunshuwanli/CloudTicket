@@ -4,6 +4,8 @@ import android.content.Context;
 import android.text.format.DateUtils;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
 import com.pri.yunshuwanli.cloudticket.ormlite.DatabaseHelper;
 import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
@@ -30,14 +32,15 @@ public class OrderDao {
 
     public synchronized void add(OrderInfo orderInfo) {
         try {
-            List<OrderInfo> list = userDaoOpe.queryForMatching(orderInfo);
-            if (list != null && list.size() > 0) return;
-            userDaoOpe.create(orderInfo);
+//            List<OrderInfo> list = userDaoOpe.queryForMatching(orderInfo);
+//            if (list != null && list.size() > 0) return;
+            userDaoOpe.createIfNotExists(orderInfo);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
+
     public synchronized void updata(OrderInfo orderInfo) {
         try {
             userDaoOpe.update(orderInfo);
@@ -47,8 +50,32 @@ public class OrderDao {
 
     }
 
+    public synchronized void deleteNDayBefore(int day) {
+        try {
+            String dayS = DateUtil.getDate(day);
+
+            DeleteBuilder<OrderInfo, Integer> builder = userDaoOpe.deleteBuilder();
+            builder.where().le("orderDate", dayS); //le <  ge >
+            builder.delete();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public List<OrderInfo> queryOrderNDayBefore(int day) {
+        String dayS = DateUtil.getDate(day);
+        try {
+            return userDaoOpe.queryBuilder().where().le("orderDate", dayS).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
     //查询失败订单
-    public List<OrderInfo> queryOrderInfoUpdataFail(boolean boo){
+    public List<OrderInfo> queryOrderInfoUpdataFail() {
         try {
             return userDaoOpe.queryBuilder().where().eq("isUpdate", false).query();
         } catch (SQLException e) {
@@ -56,27 +83,30 @@ public class OrderDao {
         }
         return null;
     }
+
     //查询时间段内的订单数据 单位天
-    public List<OrderInfo> queryOrderOfTime(int day){
+    public List<OrderInfo> queryOrderOfTime(int day) {
         try {
-           String today =  DateUtil.getTodayDate();
-           String dayS = DateUtil.getDate(day);
-           return userDaoOpe.queryBuilder().where().between("orderDate", dayS, today).query();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-   //按车牌查询订单数据
-    public List<OrderInfo> queryOrderOfCarNo(String s){
-        try {
-           return userDaoOpe.queryBuilder().where().eq("carNo", s).query();
+            String today = DateUtil.getTodayDate();
+            String dayS = DateUtil.getDate(day);
+            QueryBuilder<OrderInfo, Integer> builder = userDaoOpe.queryBuilder();
+
+            return builder.orderBy("orderDate", false).where().between("orderDate", dayS, today).query();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    //按车牌查询订单数据
+    public List<OrderInfo> queryOrderOfCarNo(String s) {
+        try {
+            return userDaoOpe.queryBuilder().where().eq("carNo", s).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
     public List<OrderInfo> queryMatching(OrderInfo orderInfo) {

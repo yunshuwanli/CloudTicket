@@ -30,7 +30,7 @@ import yswl.com.klibrary.util.ToastUtil;
  * Created by kangpAdministrator on 2017/5/3 0003.
  * Emial kangpeng@yunhetong.net
  */
-
+@Deprecated
 public class HttpClientProxy2 implements IRequestMethod<String> {
     private static final String TAG = HttpClientProxy2.class.getSimpleName();
     private volatile static HttpClientProxy2 instance;

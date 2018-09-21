@@ -7,13 +7,16 @@ import android.text.TextUtils;
 
 import com.czm.library.save.imp.LogWriter;
 import com.pri.yunshuwanli.cloudticket.R;
+import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
 import com.pri.yunshuwanli.cloudticket.entry.User;
 import com.pri.yunshuwanli.cloudticket.entry.UserManager;
+import com.pri.yunshuwanli.cloudticket.ormlite.dao.OrderDao;
 import com.pri.yunshuwanli.cloudticket.utils.DataFactory;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import yswl.com.klibrary.MApplication;
@@ -22,6 +25,7 @@ import yswl.com.klibrary.http.CallBack.HttpCallback;
 import yswl.com.klibrary.http.HttpClientProxy;
 import yswl.com.klibrary.http.okhttp.MSPUtils;
 import yswl.com.klibrary.util.GsonUtil;
+import yswl.com.klibrary.util.L;
 import yswl.com.klibrary.util.ToastUtil;
 
 import static com.pri.yunshuwanli.cloudticket.Contant.SP_File_NANE;
@@ -41,8 +45,7 @@ public class SplashActivity extends MActivity implements HttpCallback<JSONObject
             requestInitUserInfo(uuid);
         }
 
-        //TODO TEST DATA
-        DataFactory.saveListData2(this);
+
 
     }
 

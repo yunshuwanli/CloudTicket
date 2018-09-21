@@ -30,6 +30,7 @@ import okhttp3.Response;
 import yswl.com.klibrary.MApplication;
 import yswl.com.klibrary.http.CallBack.DownloadCallBack;
 import yswl.com.klibrary.http.CallBack.HttpCallback;
+import yswl.com.klibrary.http.CallBack.OrderHttpCallBack;
 import yswl.com.klibrary.http.okhttp.IRequestMethod;
 import yswl.com.klibrary.http.okhttp.OkHttpClientManager;
 import yswl.com.klibrary.util.L;
@@ -115,6 +116,61 @@ public class HttpClientProxy implements IRequestMethod<JSONObject> {
         }
     }
 
+    public void postJsonAsynAndParams(String url, final int requestId, String jsonParams, Object o, final OrderHttpCallBack httpCallback) {
+        try {
+
+            L.e(TAG, "http request params :" + jsonParams);
+            RequestBody body = RequestBody.create(MEDIA_TYPE_JSON, jsonParams);
+            String requestUrl;
+            if (url.startsWith("http://") || url.startsWith("https://")) {
+                requestUrl = url;
+            } else {
+                requestUrl = String.format("%s%s", BASE_URL, url);
+            }
+            final String finalUrl = requestUrl;
+            final Object object = o;
+            Request request = new Request.Builder().url(requestUrl).post(body).build();
+            OkHttpClientManager.getSingleInstance().newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e(TAG, "url:" + finalUrl + "\n msg:" + e.getMessage());
+                    if (httpCallback != null)
+                        httpCallback.onFail(requestId, e.getMessage(), object);
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (httpCallback != null && response.isSuccessful()) {
+                       final String body = response.body().string();
+                        if (!TextUtils.isEmpty(body)) {
+                            MApplication.getApplication().getGolbalHander().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    JSONObject result = null;
+                                    try {
+                                        result = new JSONObject(body);
+                                        httpCallback.onSucceed(requestId, result, object);
+
+
+                                    } catch (JSONException e) {
+//                                e.printStackTrace();
+                                        httpCallback.onFail(requestId, e.getMessage(), object);
+                                    }
+                                }
+                            });
+
+
+                        }
+
+                    }
+                }
+
+
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void postJSONAsyn(String url, final int requestId, String paramsMap, final HttpCallback<JSONObject> httpCallback) {

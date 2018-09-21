@@ -13,6 +13,9 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
+import yswl.com.klibrary.util.GsonUtil;
+import yswl.com.klibrary.util.L;
+
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
@@ -24,11 +27,25 @@ public class TestOrmlite extends AndroidTestCase {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
 
+        //TODO TEST DATA
         OrderDao dao = new OrderDao(appContext);
-        dao.add(new OrderInfo("test_ME24156071", " 1170.00",
-                "2018-06-22 23:59:59", "沪 A88888",
-                "某某场库,停车时间 201809061433-201809061533 共计一小时"));
-
-        List<OrderInfo> list = dao.queryAll();
+        OrderInfo info = new OrderInfo("No_112132",
+                10.00, "2018-09-20 12:00:00", "ASD");
+        OrderInfo info2 = new OrderInfo("No_112133",
+                10.00, "2018-09-20 12:00:00", "DCF");
+        OrderInfo info3 = new OrderInfo("NO_112134",
+                10.00, "2018-09-20 12:00:00", "AAA");
+        dao.add(info);
+        dao.add(info2);
+        dao.add(info3);
+        dao.add(info3);
+        L.e( GsonUtil.GsonString(dao.queryAll()));
+        List<OrderInfo > list = dao.queryOrderOfCarNo("AAA");
+        if(list!=null){
+            OrderInfo orderInfo = list.get(0);
+            orderInfo.setCarNo("BBB");
+            dao.updata(orderInfo);
+        }
+        L.e( GsonUtil.GsonString( dao.queryAll()));
     }
 }
