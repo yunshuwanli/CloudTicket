@@ -1,5 +1,6 @@
 package com.pri.yunshuwanli.cloudticket.keeplive.onepx;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,8 +14,8 @@ import android.view.WindowManager;
 import java.lang.ref.WeakReference;
 
 import yswl.com.klibrary.base.MActivity;
-
-public class OnepxActivity extends MActivity {
+//不能继承AppCompActivity
+public class OnepxActivity extends Activity {
     private static final String TAG = "OnePxActivity";
     public static WeakReference<OnepxActivity> instance;
 

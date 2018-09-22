@@ -1,40 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_white"
-    android:orientation="vertical"
     tools:context=".acitivity.SearchingActivity">
 
-    <LinearLayout
-        android:background="@color/app_bg2"
+
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_height="54dp">
-        <com.pri.yunshuwanli.cloudticket.view.SerchBoxView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:hint="请输入车牌号码"
-            android:id="@+id/et_key"
-            android:layout_height="56dp"/>
-        <TextView
-            android:id="@+id/submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="搜索"
-            android:textColor="@color/tv_text_main"
-            android:layout_gravity="center"
-            android:textSize="17sp"
-            android:layout_marginRight="10dp"
-            android:padding="10dp"/>
+        android:layout_height="match_parent"
+        android:background="@color/app_white"
+        android:orientation="vertical"
+       >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:background="@color/app_bg2"
+            android:orientation="horizontal">
+
+            <com.pri.yunshuwanli.cloudticket.view.SerchBoxView
+                android:id="@+id/et_key"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+
+                android:hint="请输入车牌号码" />
+
+            <TextView
+                android:id="@+id/submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
+                android:text="搜索"
+                android:textColor="@color/tv_text_main"
+                android:textSize="17sp" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </FrameLayout>
+
+
     </LinearLayout>
-    <FrameLayout
-        android:id="@+id/content"
+    <android.inputmethodservice.KeyboardView
+        android:id="@+id/keyboard_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#d1d5db"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:keyBackground="@drawable/selector_key_background"
+        android:keyPreviewHeight="43dp"
+        android:keyPreviewLayout="@layout/key_preview_layout"
+        android:keyTextColor="#333333"
+        android:keyTextSize="16sp"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:shadowColor="#00000000"
+        android:shadowRadius="0.0"
+        android:visibility="visible" />
 
-    </FrameLayout>
-
-</LinearLayout>
+</RelativeLayout>

@@ -25,6 +25,7 @@ import com.pri.yunshuwanli.cloudticket.ormlite.dao.OrderDao;
 import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
 import com.pri.yunshuwanli.cloudticket.utils.PopupWindowUtil;
 import com.pri.yunshuwanli.cloudticket.utils.PrinterTester;
+import com.pri.yunshuwanli.cloudticket.utils.ServerThread;
 import com.pri.yunshuwanli.cloudticket.utils.SignUtil;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -37,9 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Callable;
 
-import yswl.com.klibrary.MApplication;
 import yswl.com.klibrary.base.MActivity;
 import yswl.com.klibrary.http.CallBack.HttpCallback;
 import yswl.com.klibrary.http.CallBack.OrderHttpCallBack;
@@ -144,20 +143,23 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
 
     //模拟订单生成
     void initTimer() {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                //TODO TEST DATA
-                info = new OrderInfo("o112132" + i,
-                        30.00+i, "2018-09-21 00:00:00", "HHHHHH");
-                i++;
-                requestSaveOrderInfo(info, false);
-            }
-        }, 5000, 1000*10);
-
-
+//        Timer timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                //TODO TEST DATA
+//                info = new OrderInfo("o112132" + i,
+//                        30.00+i, "2018-09-21 00:30:00", "HBBHHH");
+//                i++;
+//                requestSaveOrderInfo(info, false);
+//            }
+//        }, 5000, 1000*60*60);
+//
+        ServerThread serverThread = new ServerThread();
+        new Thread(serverThread).start();
     }
+
+
 
 
     private void initView() {

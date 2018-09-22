@@ -3,7 +3,12 @@ package com.pri.yunshuwanli.cloudticket.acitivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,6 +18,7 @@ import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
 import com.pri.yunshuwanli.cloudticket.entry.UserManager;
 import com.pri.yunshuwanli.cloudticket.fragment.ListFragment;
 import com.pri.yunshuwanli.cloudticket.ormlite.dao.OrderDao;
+import com.pri.yunshuwanli.cloudticket.utils.CarKeyboardUtil;
 import com.pri.yunshuwanli.cloudticket.utils.SignUtil;
 import com.pri.yunshuwanli.cloudticket.view.SerchBoxView;
 
@@ -33,7 +39,7 @@ import yswl.com.klibrary.util.GsonUtil;
 import yswl.com.klibrary.util.MKeyBoardUtils;
 import yswl.com.klibrary.util.ToastUtil;
 
-public class SearchingActivity extends MActivity implements HttpCallback<JSONObject> {
+public class SearchingActivity extends MActivity implements HttpCallback<JSONObject>, View.OnTouchListener {
     private static final String TAG = SearchingActivity.class.getSimpleName();
 
     public static void JumpAct(Context context) {
@@ -44,7 +50,7 @@ public class SearchingActivity extends MActivity implements HttpCallback<JSONObj
     TextView textView_search;
     SerchBoxView serchBoxView;
     ListFragment mResultFragment;
-
+    CarKeyboardUtil keyboardUtil;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +65,30 @@ public class SearchingActivity extends MActivity implements HttpCallback<JSONObj
             }
         });
         serchBoxView = findViewById(R.id.et_key);
+
+        keyboardUtil = new CarKeyboardUtil(this, serchBoxView.getEditText());
+        serchBoxView.getEditText().setOnTouchListener(this);
+
+        serchBoxView.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String text = s.toString();
+                if (text.contains("港") || text.contains("澳") || text.contains("学") ){
+                    serchBoxView.getEditText().setFilters(new InputFilter[]{new InputFilter.LengthFilter(7)});
+                }else{
+                    serchBoxView.getEditText().setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
+
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
 
     }
@@ -131,6 +161,39 @@ public class SearchingActivity extends MActivity implements HttpCallback<JSONObj
 
     @Override
     public void onFail(int requestId, String errorMsg) {
+
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int id = serchBoxView.getResId();
+        if(v.getId() == id){
+            keyboardUtil.hideSystemKeyBroad();
+            keyboardUtil.hideSoftInputMethod();
+            if (!keyboardUtil.isShow())
+                keyboardUtil.showKeyboard();
+        }else {
+            if (keyboardUtil.isShow())
+                keyboardUtil.hideKeyboard();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (keyboardUtil.isShow()) {
+            keyboardUtil.hideKeyboard();
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyboardUtil.isShow()){
+            keyboardUtil.hideKeyboard();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
 
     }
 }

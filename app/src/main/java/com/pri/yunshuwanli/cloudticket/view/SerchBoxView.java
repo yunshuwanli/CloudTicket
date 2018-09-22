@@ -1,6 +1,8 @@
 package com.pri.yunshuwanli.cloudticket.view;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -25,10 +27,19 @@ public class SerchBoxView extends RelativeLayout {
 		super(context, attrs, defStyle);
 		init(context);
 	}
+
+//	void init(Context context,AttributeSet attrs){
+//		mContext = context;
+//		mEditText = new EditText(context,attrs);
+//		mEditText.setFocusable(true);
+//		mEditText.setFocusableInTouchMode(true);
+//		addView(mEditText);
+//
+//	}
     private void init(Context context){
     	mContext = context;
     	View v = LayoutInflater.from(mContext).inflate(R.layout.view_common_serchbox, this,false);
-    	mEditText = (EditText)v.findViewById(R.id.comm_serchbox_edittext);
+    	mEditText = v.findViewById(R.id.comm_serchbox_edittext);
     	this.setFocusable(true);
     	this.setFocusableInTouchMode(true);
     	this.addView(v);
@@ -39,5 +50,8 @@ public class SerchBoxView extends RelativeLayout {
 
 	public EditText getEditText() {
 		return mEditText;
+	}
+	public int getResId(){
+		return R.id.comm_serchbox_edittext;
 	}
 }

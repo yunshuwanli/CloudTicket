@@ -12,6 +12,8 @@ import com.pri.yunshuwanli.cloudticket.entry.User;
 import com.pri.yunshuwanli.cloudticket.entry.UserManager;
 import com.pri.yunshuwanli.cloudticket.ormlite.dao.OrderDao;
 import com.pri.yunshuwanli.cloudticket.utils.DataFactory;
+import com.pri.yunshuwanli.cloudticket.utils.IpUtil;
+import com.pri.yunshuwanli.cloudticket.utils.ServerThread;
 
 import org.json.JSONObject;
 
@@ -32,6 +34,8 @@ import static com.pri.yunshuwanli.cloudticket.Contant.SP_File_NANE;
 import static com.pri.yunshuwanli.cloudticket.Contant.UUID;
 
 public class SplashActivity extends MActivity implements HttpCallback<JSONObject> {
+
+    private static final String TAG = "SplashActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

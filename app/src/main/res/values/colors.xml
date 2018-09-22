@@ -13,7 +13,10 @@
     <color name="tv_text_main">#464a4c</color>
     <color name="tv_text_main2">#767879</color>
 
-
+    <!-- 按钮颜色 白色系 -->
+    <color name="btn_color_white_normal">#FFFFFF</color>
+    <color name="btn_color_white_pressed">#e5e5e5</color>
+    <color name="btn_color_white_disable">#CCCCCC</color>
     <!--  +++++++++++++++++++++++++++  PickView的颜色  ++++++++++++++++++++++++++++++   -->
     <color name="pickerview_timebtn_nor">#057dff</color>
     <color name="pickerview_timebtn_pre">#c2daf5</color>
