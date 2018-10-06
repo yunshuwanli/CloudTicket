@@ -12,6 +12,7 @@
     <color name="btn_bg_main2">#78b3e1</color>
     <color name="tv_text_main">#464a4c</color>
     <color name="tv_text_main2">#767879</color>
+    <color name="tv_text_black">#090909</color>
 
     <!-- 按钮颜色 白色系 -->
     <color name="btn_color_white_normal">#FFFFFF</color>

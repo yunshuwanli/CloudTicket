@@ -1,41 +1,64 @@
 package com.pri.yunshuwanli.cloudticket;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.czm.library.LogUtil;
 import com.czm.library.save.imp.CrashWriter;
 import com.czm.library.upload.http.HttpReporter;
-import com.pri.yunshuwanli.cloudticket.entry.User;
+import com.facebook.stetho.Stetho;
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.pax.dal.IDAL;
+import com.pax.dal.entity.EFontTypeAscii;
+import com.pax.dal.entity.EFontTypeExtCode;
+import com.pax.neptunelite.api.NeptuneLiteUser;
+import com.pri.yunshuwanli.cloudticket.utils.PrinterTester;
 import com.tencent.bugly.Bugly;
 
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import yswl.com.klibrary.MApplication;
-import yswl.com.klibrary.http.CallBack.HttpCallback;
-import yswl.com.klibrary.http.HttpClientProxy;
-import yswl.com.klibrary.http.okhttp.MSPUtils;
-import yswl.com.klibrary.util.GsonUtil;
-import yswl.com.klibrary.util.ToastUtil;
 
-public class App extends MApplication  {
+public class App extends MApplication {
 
     @Override
     public boolean getDebugSetting() {
         return true;
     }
 
+
+    private static IDAL idal;
+
+    public static IDAL getIdal() {
+        return idal;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-        initCrashReport();
 
+        initIDAL();
+        initCrashReport();
+//        Stetho.initializeWithDefaults(this);
+        com.orhanobut.logger.Logger.addLogAdapter(new AndroidLogAdapter());
         //bugly  日志与版本更新
         Bugly.init(getApplicationContext(), "50d067446d", this.getDebugSetting());
+
+
     }
 
+    private void initIDAL() {
+        try {
+            idal = NeptuneLiteUser.getInstance().getDal(getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (null == idal) {
+            Toast.makeText(this, "error occurred,DAL is null.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
+    }
 
 
     @Override
@@ -71,7 +94,7 @@ public class App extends MApplication  {
         LogUtil.getInstance().setUploadType(http);
     }
 
-    public static  void uploadLog(Context context){
+    public static void uploadLog(Context context) {
         LogUtil.getInstance().upload(context);
         //LogWriter.writeLog("czm", "打Log测试！！！！");
         //FileUtil.deleteDir(new File(LogUtil.getInstance().getROOT())); 手动删除本地日志

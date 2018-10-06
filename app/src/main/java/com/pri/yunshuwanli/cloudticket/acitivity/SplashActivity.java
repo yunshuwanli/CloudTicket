@@ -93,24 +93,24 @@ public class SplashActivity extends MActivity implements HttpCallback<JSONObject
     public void onSucceed(int requestId, JSONObject result) {
         if(requestId==1 && result!=null){
             if(result.optString("code").equals("0000")){
-                User user =  User.jsonToUser(result);
+                User user =  User.jsonToUser(result.optJSONObject("data"));
                 UserManager.setUser(user);
                 next();
             }else {
                 ToastUtil.showToast("获取初始化信息失败 code:"+result.optString("msg"));
-                //TODO TEST DATA
-                User user =  new User();
-                user.setAppId("001");
-                user.setGsmc("纳税名是上海");
-                user.setClientNo("00001");
-                user.setKey("qwerttyue");
-                user.setSkr("康子");
-                user.setKpdmc("上海南站停车场");
-                UserManager.setUser(user);
-                MainActivity.JumpAct(this);
-                ToastUtil.showToast(result.optString("msg"));
-                LogWriter.writeLog("Cloud", "根据uid获取信息失败，uid : "+
-                        UserManager.getUID() + " data: "+result);
+//                //TODO TEST DATA
+//                User user =  new User();
+//                user.setAppId("001");
+//                user.setGsmc("纳税名是上海");
+//                user.setClientNo("00001");
+//                user.setKey("qwerttyue");
+//                user.setSkr("康子");
+//                user.setKpdmc("上海南站停车场");
+//                UserManager.setUser(user);
+//                MainActivity.JumpAct(this);
+//                ToastUtil.showToast(result.optString("msg"));
+//                LogWriter.writeLog("Cloud", "根据uid获取信息失败，uid : "+
+//                        UserManager.getUID() + " data: "+result);
             }
         }
     }

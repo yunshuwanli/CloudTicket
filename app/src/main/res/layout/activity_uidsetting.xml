@@ -17,7 +17,8 @@
         android:paddingLeft="5dp"
         android:background="@drawable/common_et_bg"
         android:hint="请输入设备ID"
-        android:inputType="textPassword" />
+        android:text="hcz-hcz001"
+        android:inputType="text" />
 
     <Button
         android:id="@+id/submit"

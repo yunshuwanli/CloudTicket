@@ -35,10 +35,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     api 'com.google.zxing:core:3.3.0'
     api project(':klibrary')
-
     api 'com.j256.ormlite:ormlite-android:5.0'
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-5'
     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-5'
     api 'com.tencent.bugly:crashreport_upgrade:latest.release'
 
+    implementation 'com.orhanobut:logger:2.2.0'
 }

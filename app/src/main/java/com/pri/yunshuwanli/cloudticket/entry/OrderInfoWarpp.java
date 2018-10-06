@@ -1,5 +1,5 @@
 package com.pri.yunshuwanli.cloudticket.entry;
-
+@Deprecated
 public class OrderInfoWarpp {
 
     /**

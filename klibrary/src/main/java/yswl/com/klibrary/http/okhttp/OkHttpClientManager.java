@@ -1,6 +1,8 @@
 package yswl.com.klibrary.http.okhttp;
 
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
@@ -50,7 +52,8 @@ public class OkHttpClientManager {
                 .connectTimeout(connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(writeTimeout, TimeUnit.SECONDS)
-                .addInterceptor(new HeaderInterceptor());
+                .addInterceptor(new HeaderInterceptor())
+                .addNetworkInterceptor(new StethoInterceptor());
 //                .addNetworkInterceptor(new NewNetWorkInterceptor());
 //                .hostnameVerifier(new TrustAllSSL.TrustAllHostnameVerifier());
         if (MApplication.getApplication().getDebugSetting()) {
@@ -59,6 +62,7 @@ public class OkHttpClientManager {
         }
         return builder.build();
     }
+
     private static OkHttpClient getInstance2() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .cache(new Cache(MApplication.getApplication().getCacheDir(), 512 * 1024))

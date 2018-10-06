@@ -151,7 +151,8 @@ public class SearchingActivity extends MActivity implements HttpCallback<JSONObj
     public void onSucceed(int requestId, JSONObject result) {
         if (requestId == 2 && result != null) {
             if (result.optString("code").equals("0000")) {
-                ArrayList<OrderInfo> infos = OrderInfo.jsonToList(result.optJSONArray("orderList"));
+                JSONObject data = result.optJSONObject("data");
+                ArrayList<OrderInfo> infos = OrderInfo.jsonToList(data.optJSONArray("orderList"));
                 showResultUI(infos);
             } else {
                 result.optString("msg");

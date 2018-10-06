@@ -32,7 +32,6 @@ public class UIDSettingActivity extends MActivity {
     public static void JumpAct(Activity context,int requestId) {
         Intent intent = new Intent(context, UIDSettingActivity.class);
         context.startActivityForResult(intent,requestId);
-        context.finish();
     }
     EditText editText;
     @Override

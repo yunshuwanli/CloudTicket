@@ -3,6 +3,9 @@ package com.pri.yunshuwanli.cloudticket.utils;
 import android.util.Base64;
 
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
+import com.pri.yunshuwanli.cloudticket.entry.UserManager;
+
+import org.apaches.commons.codec.digest.DigestUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -30,8 +33,8 @@ public class SignUtil {
 
     public static String getSignStr(Map<String, Object> data) {
         String dataStr = GsonUtil.GsonString(data);
-        String signSourceData = "data=" + dataStr + "&key=" + key;
-        return MD5Util.MD5(signSourceData);
+        String signSourceData = "data=" + dataStr + "&key=" + UserManager.getUser().getKey();
+        return DigestUtils.md5Hex(signSourceData);
     }
 
     private static final String QR_CODE_URL_RORMAT = "http://fpjtest.datarj.com/einv/kptService/%s/%s";
@@ -48,7 +51,7 @@ public class SignUtil {
         data.put("type", "2");
         String jsonStr = GsonUtil.GsonString(data);
 
-        String original_data = "data=" + jsonStr + "&key=" + key;
+        String original_data = "data=" + jsonStr + "&key=" + UserManager.getUser().getKey();
         String si_md5Str = MD5Util.MD5(original_data);
         String sign_before = "data=" + jsonStr + "&si=" + si_md5Str;
         String signed = new String(Base64.encode(sign_before.getBytes(), Base64.DEFAULT));

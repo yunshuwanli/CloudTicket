@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import yswl.com.klibrary.util.L;
+import yswl.com.klibrary.util.ToastUtil;
 
 
 //Server端的主线程
@@ -56,6 +57,7 @@ public class ServerThread implements Runnable {
                 while ((len = is.read(buffer)) != -1) {
                     text = new String(buffer, 0, len);
                     L.e(TAG,"收到的数据为：" + text);
+                    ToastUtil.showToast("接收到数据："+text);
 //                    if() //拿到数据 结束 关闭这个socket
                 }
 

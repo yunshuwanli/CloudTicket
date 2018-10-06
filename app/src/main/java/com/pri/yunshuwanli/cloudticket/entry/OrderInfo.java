@@ -21,17 +21,19 @@ import yswl.com.klibrary.util.DateJsonDeserializer;
 public class OrderInfo implements Parcelable {
 
     public static ArrayList<OrderInfo> jsonToList(JSONArray jsonArray) {
+        if(jsonArray == null) return null;
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateJsonDeserializer()).create();
         ArrayList<OrderInfo> list = gson.fromJson(jsonArray.toString(), new TypeToken<ArrayList<OrderInfo>>(){}.getType());
         return list;
     }
 
 
-    public OrderInfo(String orderNo, double totalAmount, String orderDate, String carNo) {
+    public OrderInfo(String orderNo, double totalAmount, String orderDate, String carNo,String remark) {
         this.orderNo = orderNo;
         this.totalAmount = totalAmount;
         this.orderDate = orderDate;
         this.carNo = carNo;
+        this.remark = remark;
     }
 
     //ormlite必须提供无参构造

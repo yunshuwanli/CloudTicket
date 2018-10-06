@@ -9,8 +9,8 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -52,11 +52,14 @@
         <activity android:name=".acitivity.RecordActivity" />
         <activity android:name=".acitivity.SearchingActivity" />
         <activity android:name=".acitivity.UserInfoActivity" />
-        <activity android:name=".acitivity.UIDSettingActivity"></activity>
+        <activity android:name=".acitivity.UIDSettingActivity" />
+
+        <activity android:name=".acitivity.MainTestActivity">
+
+        </activity>
 
 
-
-        <!--************保活************-->
+        <!-- ************保活************ -->
 
         <activity
             android:name=".keeplive.onepx.OnepxActivity"
@@ -65,65 +68,54 @@
             android:exported="false"
             android:finishOnTaskLaunch="false"
             android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Translucent"
-            />
+            android:theme="@android:style/Theme.Translucent" />
 
         <service
             android:name=".keeplive.foreground.ChannelService"
             android:enabled="true"
-            android:exported="true"
-            >
-        </service>
-
+            android:exported="true"></service>
         <service
             android:name=".keeplive.foreground.DaemonService"
             android:enabled="true"
-            android:exported="true"
-           >
-        </service>
-
+            android:exported="true"></service>
         <service
             android:name=".keeplive.timer.ScheduleService"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE">
-        </service>
+            android:permission="android.permission.BIND_JOB_SERVICE"></service>
 
-        <receiver
-            android:name=".keeplive.broadcast.MonitorReceiver"
-            >
+        <receiver android:name=".keeplive.broadcast.MonitorReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-                <action android:name="com.silence.gray.wake"/>
-                <action android:name="android.intent.action.USER_PRESENT"/>
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="com.silence.gray.wake" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED"/>
-                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
 
-                <data android:scheme="package"/>
+                <data android:scheme="package" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".keeplive.onepx.ScreenReceiver"
             android:enabled="true"
-            android:exported="true"
-           >
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.USER_PRESENT"/>
-                <action android:name="android.intent.action.SCREEN_ON"/>
-                <action android:name="android.intent.action.SCREEN_OFF"/>
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.SCREEN_ON" />
+                <action android:name="android.intent.action.SCREEN_OFF" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <!--************保活end************-->
+        <!-- ************保活end************ -->
+
     </application>
 
 </manifest>

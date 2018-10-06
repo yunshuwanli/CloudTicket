@@ -1,14 +1,13 @@
 package com.pri.yunshuwanli.cloudticket.acitivity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,17 +15,20 @@ import com.pax.dal.IDAL;
 import com.pax.dal.entity.EFontTypeAscii;
 import com.pax.dal.entity.EFontTypeExtCode;
 import com.pax.neptunelite.api.NeptuneLiteUser;
+import com.pri.yunshuwanli.cloudticket.App;
 import com.pri.yunshuwanli.cloudticket.R;
 import com.pri.yunshuwanli.cloudticket.adapter.RecordListAdapter;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
 import com.pri.yunshuwanli.cloudticket.entry.UserManager;
 import com.pri.yunshuwanli.cloudticket.keeplive.foreground.DaemonService;
 import com.pri.yunshuwanli.cloudticket.ormlite.dao.OrderDao;
+import com.pri.yunshuwanli.cloudticket.utils.BitmapUtils;
 import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
 import com.pri.yunshuwanli.cloudticket.utils.PopupWindowUtil;
 import com.pri.yunshuwanli.cloudticket.utils.PrinterTester;
-import com.pri.yunshuwanli.cloudticket.utils.ServerThread;
+import com.pri.yunshuwanli.cloudticket.utils.PrinterUtil;
 import com.pri.yunshuwanli.cloudticket.utils.SignUtil;
+import com.pri.yunshuwanli.cloudticket.view.WrapContentLinearLayoutManager;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
@@ -36,14 +38,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import yswl.com.klibrary.base.MActivity;
-import yswl.com.klibrary.http.CallBack.HttpCallback;
 import yswl.com.klibrary.http.CallBack.OrderHttpCallBack;
 import yswl.com.klibrary.http.HttpClientProxy;
-import yswl.com.klibrary.http.okhttp.MSPUtils;
 import yswl.com.klibrary.util.EmptyRecyclerView;
 import yswl.com.klibrary.util.GsonUtil;
 import yswl.com.klibrary.util.L;
@@ -67,25 +68,24 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
     RefreshLayout refreshLayout;
     RecordListAdapter adapter;
     static final List<String> items = new ArrayList<>(2);
+    static int i = 0;
 
     static {
         items.add("上传日志");
         items.add("系统信息");
+        i = new Random(100).nextInt();
     }
 
     private OrderDao dao;
     List<OrderInfo> ondayOrders;
-    private volatile OrderInfo info;
-    IDAL idal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //开启进程保活
-        startService(new Intent(getApplicationContext(), DaemonService.class));
+//        startService(new Intent(getApplicationContext(), DaemonService.class));
         initView();
-        initPrinter();
         initTimer();
         initDataBase();
 
@@ -101,65 +101,44 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         return dao;
     }
 
-    private void initPrinter() {
-        try {
-            idal = NeptuneLiteUser.getInstance().getDal(getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (null == idal) {
-            Toast.makeText(this, "error occurred,DAL is null.", Toast.LENGTH_LONG).show();
-            return;
-        }
-        PrinterTester.getInstance().init(idal);
-        PrinterTester.getInstance().fontSet(EFontTypeAscii.FONT_8_16, EFontTypeExtCode.FONT_16_32);
-        if (true) {
-            PrinterTester.getInstance().printBitmap(
-                    BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round));
-        }
-        PrinterTester.getInstance().spaceSet(Byte.parseByte("0"), Byte.parseByte("0"));
-        PrinterTester.getInstance().leftIndents(Short.parseShort("0"));
-        PrinterTester.getInstance().setGray(Integer.parseInt("1"));
-        if (false) {
-            PrinterTester.getInstance().setDoubleWidth(true, true);
-        }
-        if (false) {
-            PrinterTester.getInstance().setDoubleHeight(true, true);
-        }
-        PrinterTester.getInstance().setInvert(true);
-        PrinterTester.getInstance().printStr("大明王朝1566", null);
-        PrinterTester.getInstance().step(Integer.parseInt("150"));
 
-//        getDotLineTv.post(new Runnable() {
-//            public void run() {
-//                getDotLineTv.setText(PrinterTester.getInstance().getDotLine() + "");
-//            }
-//        });
-        final String status = PrinterTester.getInstance().start();
-        L.i("打印完成状态：" + status);
-    }
 
-    int i = 100;
 
     //模拟订单生成
     void initTimer() {
-//        Timer timer = new Timer();
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                //TODO TEST DATA
-//                info = new OrderInfo("o112132" + i,
-//                        30.00+i, "2018-09-21 00:30:00", "HBBHHH");
-//                i++;
-//                requestSaveOrderInfo(info, false);
-//            }
-//        }, 5000, 1000*60*60);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                //TODO TEST DATA
+
+               OrderInfo info = new OrderInfo("20180913000000" + i,
+                        10.00, "2018-09-28 23:59:59",
+                        "沪A88888",
+                        "某某场库，停车时间201809061433-201809061533共计一小时");
+                if (beginPrinter(info)) {
+                    requestSaveOrderInfo(info, false);
+                }
+
+            }
+        }, 1000 * 10, 1000 * 60 * 60);
 //
-        ServerThread serverThread = new ServerThread();
-        new Thread(serverThread).start();
+//        ServerThread serverThread = new ServerThread();
+//        new Thread(serverThread).start();
+
+
     }
 
-
+    private boolean beginPrinter(final OrderInfo info) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PrinterUtil.initPrinter(App.getIdal());
+                PrinterUtil.startPrinter(MainActivity.this,info);
+            }
+        }).start();
+        return false;
+    }
 
 
     private void initView() {
@@ -176,12 +155,18 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         price = findViewById(R.id.price);
         count = findViewById(R.id.ticket_count);
         recyclerView = findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this));
 
         adapter = new RecordListAdapter(this, null, R.layout.item_list_record);
         EmptyRecyclerView emptyView = new EmptyRecyclerView(this);
         emptyView.setNoticeAndIcon("没有找到哟", "暂无数据", -1);
         adapter.setEmptyView(emptyView);
+        adapter.setOnClickListener(new RecordListAdapter.OnClickListener() {
+            @Override
+            public void onClick(OrderInfo info) {
+                beginPrinter(info);
+            }
+        });
         recyclerView.setAdapter(adapter);
         refreshLayout.autoRefresh();
 
@@ -195,7 +180,7 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ondayOrders = new OrderDao(MainActivity.this).queryOrderOfTime(3);
+                ondayOrders = new OrderDao(MainActivity.this).queryOrderOfTime(10);
                 L.e(TAG, "data size: " + ondayOrders.size());
                 MainActivity.this.runOnUiThread(new Runnable() {
                     @Override
@@ -335,11 +320,12 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         updateRecyleViewData(o);
     }
 
-    private synchronized void updateRecyleViewData(Object o) {
+    private void updateRecyleViewData(Object o) {
         if (o instanceof OrderInfo) {
             OrderInfo info = (OrderInfo) o;
-            if (adapter != null && recyclerView!=null){
+            if (adapter != null && recyclerView != null) {
                 adapter.addItem(info);
+//                adapter.notifyDataSetChanged();
                 adapter.notifyItemInserted(0);
                 recyclerView.scrollToPosition(0);
 
@@ -353,7 +339,7 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
 
             if (price != null) {
                 double curprice = Double.valueOf(price.getText().toString());
-                curprice = curprice+info.getTotalAmount();
+                curprice = curprice + info.getTotalAmount();
                 price.setText(String.valueOf(curprice));
             }
 
