@@ -47,8 +47,8 @@ public class UIDSettingActivity extends MActivity {
                if(TextUtils.isEmpty(uid)){
                    ToastUtil.showToast("请输入设备ID");
                }else {
-                   saveUid(uid);
                    Intent intent = new Intent();
+                   intent.putExtra("UID",uid);
                    setResult(Activity.RESULT_OK,intent);
                    finish();
 
@@ -57,9 +57,7 @@ public class UIDSettingActivity extends MActivity {
         });
     }
 
-    private void saveUid(String uid){
-      UserManager.setUid(uid);
-    }
+
 
 
 }

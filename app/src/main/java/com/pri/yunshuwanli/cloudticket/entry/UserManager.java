@@ -1,5 +1,6 @@
 package com.pri.yunshuwanli.cloudticket.entry;
 
+import com.pri.yunshuwanli.cloudticket.App;
 import com.pri.yunshuwanli.cloudticket.Contant;
 
 
@@ -24,6 +25,9 @@ public class UserManager {
 
     public static void setUid(String uid){
         MSPUtils.put(Contant.SP_File_NANE,Contant.UUID,uid);
+    }
+    public static void clear(){
+        MSPUtils.clear(App.getApplication(),Contant.SP_File_NANE);
     }
 
     public static String getUID(){
