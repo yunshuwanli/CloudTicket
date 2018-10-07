@@ -34,4 +34,11 @@ public class DateUtil {
         String dayS = sdf.format(calendar.getTime());
         return dayS;
     }
+
+    public static String getDate(int day,SimpleDateFormat formate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE,-day);
+        String dayS = formate.format(calendar.getTime());
+        return dayS;
+    }
 }

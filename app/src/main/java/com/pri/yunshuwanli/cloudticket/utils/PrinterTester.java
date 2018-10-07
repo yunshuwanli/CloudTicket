@@ -226,34 +226,34 @@ public class PrinterTester {
         String res = "";
         switch (status) {
             case 0:
-                res = "Success ";
+                res = "打印成功 ";
                 break;
             case 1:
-                res = "Printer is busy ";
+                res = "打印机忙 ";
                 break;
             case 2:
-                res = "Out of paper ";
+                res = "打印机缺纸 ";
                 break;
             case 3:
-                res = "The format of print data packet error ";
+                res = "打印数据包格式错 ";
                 break;
             case 4:
-                res = "Printer malfunctions ";
+                res = "打印机故障 ";
                 break;
             case 8:
-                res = "Printer over heats ";
+                res = "打印机过热 ";
                 break;
             case 9:
-                res = "Printer voltage is too low";
+                res = "打印机电压过低";
                 break;
             case 240:
-                res = "Printing is unfinished ";
+                res = "打印未完成 ";
                 break;
             case 252:
-                res = " The printer has not installed font library ";
+                res = " 打印机未安装字库  ";
                 break;
             case 254:
-                res = "Data package is too long ";
+                res = "打印机数据包数据过大 ";
                 break;
             default:
                 break;

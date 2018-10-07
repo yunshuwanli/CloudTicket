@@ -118,6 +118,8 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
                         "某某场库，停车时间201809061433-201809061533共计一小时");
                 if (beginPrinter(info)) {
                     requestSaveOrderInfo(info, false);
+                }else {
+
                 }
 
             }
@@ -130,14 +132,15 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
     }
 
     private boolean beginPrinter(final OrderInfo info) {
+        final boolean[] b = new boolean[1];
         new Thread(new Runnable() {
             @Override
             public void run() {
                 PrinterUtil.initPrinter(App.getIdal());
-                PrinterUtil.startPrinter(MainActivity.this,info);
+                b[0] =  PrinterUtil.startPrinter(MainActivity.this,info);
             }
         }).start();
-        return false;
+        return b[0];
     }
 
 

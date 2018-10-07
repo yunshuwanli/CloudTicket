@@ -11,11 +11,13 @@ import com.pri.yunshuwanli.cloudticket.acitivity.MainActivity;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
 
 import yswl.com.klibrary.util.L;
+import yswl.com.klibrary.util.ToastUtil;
 
 public class PrinterUtil {
 
     public static void initPrinter(IDAL idal){
             PrinterTester.getInstance().init(App.getIdal());
+
             PrinterTester.getInstance().fontSet(EFontTypeAscii.FONT_16_24, EFontTypeExtCode.FONT_24_24);
             PrinterTester.getInstance().spaceSet(Byte.parseByte("1"), Byte.parseByte("0"));
             PrinterTester.getInstance().leftIndents(Short.parseShort("0"));
@@ -31,7 +33,10 @@ public class PrinterUtil {
             String status = PrinterTester.getInstance().start();
 //            PrinterTester.getInstance().
             L.d("打印完成状态：" + status);
-            if(status.equals("Success")) return true;
+            if(status.equals("完成")){
+                return true;
+            }
+            ToastUtil.showToast(status);
             return false;
         }
 }

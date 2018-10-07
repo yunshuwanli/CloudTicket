@@ -1,30 +1,15 @@
 package com.pri.yunshuwanli.cloudticket.acitivity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
-import com.czm.library.save.imp.LogWriter;
-import com.pri.yunshuwanli.cloudticket.Contant;
 import com.pri.yunshuwanli.cloudticket.R;
-import com.pri.yunshuwanli.cloudticket.entry.User;
-import com.pri.yunshuwanli.cloudticket.entry.UserManager;
-
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import yswl.com.klibrary.base.MActivity;
-import yswl.com.klibrary.http.CallBack.HttpCallback;
-import yswl.com.klibrary.http.HttpClientProxy;
-import yswl.com.klibrary.http.okhttp.MSPUtils;
-import yswl.com.klibrary.util.GsonUtil;
 import yswl.com.klibrary.util.ToastUtil;
 
 public class UIDSettingActivity extends MActivity {

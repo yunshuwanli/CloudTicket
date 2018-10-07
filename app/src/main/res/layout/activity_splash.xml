@@ -7,6 +7,10 @@
     android:background="@color/app_white"
     tools:context=".acitivity.SplashActivity">
 
+    <ImageView
+        android:layout_width="1dp"
+        android:id="@+id/iv"
+        android:layout_height="wrap_content" />
 
 
 </LinearLayout>
