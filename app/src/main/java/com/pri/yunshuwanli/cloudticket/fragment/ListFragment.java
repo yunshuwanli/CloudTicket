@@ -20,6 +20,8 @@ import com.pri.yunshuwanli.cloudticket.R;
 import com.pri.yunshuwanli.cloudticket.acitivity.MainActivity;
 import com.pri.yunshuwanli.cloudticket.adapter.RecordListAdapter;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
+import com.pri.yunshuwanli.cloudticket.entry.PrinterAsyncTask;
+import com.pri.yunshuwanli.cloudticket.entry.PrinterTask;
 import com.pri.yunshuwanli.cloudticket.utils.BitmapUtils;
 import com.pri.yunshuwanli.cloudticket.utils.PrinterTester;
 import com.pri.yunshuwanli.cloudticket.utils.PrinterUtil;
@@ -28,6 +30,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 import yswl.com.klibrary.base.BaseRecyclerAdapter;
 import yswl.com.klibrary.base.BaseViewHolder;
@@ -63,7 +68,6 @@ public class ListFragment extends MFragment {
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -73,6 +77,7 @@ public class ListFragment extends MFragment {
 
     RecyclerView mRecyclerView;
     RecordListAdapter myAdapter;
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -84,22 +89,14 @@ public class ListFragment extends MFragment {
         myAdapter.setOnClickListener(new RecordListAdapter.OnClickListener() {
             @Override
             public void onClick(OrderInfo info) {
-                beginPrinter(info);
+                new PrinterAsyncTask(ListFragment.this.getMActivity(),null).execute(info);
             }
         });
         mRecyclerView.setAdapter(myAdapter);
     }
 
-    private boolean beginPrinter(final OrderInfo info) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                PrinterUtil.initPrinter(App.getIdal());
-                PrinterUtil.startPrinter(ListFragment.this.getMActivity(),info);
-            }
-        }).start();
-        return false;
-    }
+
+
     private ArrayList<OrderInfo> getData() {
         Bundle bundle = getArguments();
         if (bundle != null) {

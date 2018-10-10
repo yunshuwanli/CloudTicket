@@ -1,4 +1,4 @@
-package com.pri.yunshuwanli.cloudticket.utils;
+package com.pri.yunshuwanli.cloudticket.logger;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -10,9 +10,11 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
+
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -21,28 +23,29 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
-import java.text.DateFormat;
-import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import yswl.com.klibrary.util.L;
+import yswl.com.klibrary.util.ToastUtil;
 
 public class KLogger implements Thread.UncaughtExceptionHandler {
 
     private static String TAG = "LogToFile";
 
     private static String logPath = null;//log日志存放路径
+    private static String logZPath = null;//log压缩日志存放路径
 
     private static SimpleDateFormat dateFormat_date = new SimpleDateFormat("yyyy-MM-dd");//日期格式;
-    private static SimpleDateFormat dateFormat_time = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");//日期格式;
+    private static SimpleDateFormat dateFormat_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//日期格式;
     private Thread.UncaughtExceptionHandler mDefaultHandler;
     private Context mContext;
     private Map<String, String> infos = new HashMap<>();
 
-//    private static Date date = new Date();//因为log日志是使用日期命名的，使用静态成员变量主要是为了在整个程序运行期间只存在一个.log文件中;
 
     private static KLogger instance = new KLogger();
 
@@ -59,14 +62,20 @@ public class KLogger implements Thread.UncaughtExceptionHandler {
     public void init(Context context) {
         mContext = context;
         getFilePath(context);
+        getZipFilePath(context);
         mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this);
-        autoClear(1);
+//        autoClear(1);
     }
 
-    private static String getFilePath(Context context) {
+    public static String getFilePath(Context context) {
         logPath = getRootPath(context) + File.separator + "Logs" + File.separator;//获得logs文件储存路径
         return logPath;
+    }
+
+    public static String getZipFilePath(Context context) {
+        logZPath = getRootPath(context) + File.separator + "Logz" + File.separator;//获得临时压缩文件储存路径
+        return logZPath;
     }
 
     /**
@@ -146,8 +155,6 @@ public class KLogger implements Thread.UncaughtExceptionHandler {
             bw = new BufferedWriter(new OutputStreamWriter(fos));
             bw.write(log);
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -180,7 +187,7 @@ public class KLogger implements Thread.UncaughtExceptionHandler {
     private String writeFile(String sb) throws Exception {
         String fileName = getCurrNeedWriteFileName();
         if (hasSDCard()) {
-            String path = getFilePath(mContext);
+            String path =logPath;
             File dir = new File(path);
             if (!dir.exists()) dir.mkdirs();
             FileOutputStream fos = new FileOutputStream(path + fileName, true);
@@ -192,13 +199,155 @@ public class KLogger implements Thread.UncaughtExceptionHandler {
     }
 
 
+
     /**
-     * 文件删除
      *
-     * @param autoClearDay 文件保存天数
+     * @param src 源日志
+     * @param needCurrTIme  是否需要当前的日志上传 false表示压缩除今天外的所有日志
+     * @return
      */
-    public void autoClear(final int autoClearDay) {
-        String rootFile = getFilePath(mContext);
+    public String getZipFile(String src,boolean needCurrTIme) {
+        //定义压缩输出流
+        ZipOutputStream out = null;
+        String destRoot = logZPath;
+        File destfile = new File(destRoot);
+        if (!destfile.exists()) {
+            destfile.mkdirs();
+        }
+
+        String dest = null;
+        if(needCurrTIme){
+            dest = logZPath+dateFormat_date.format(new Date())+".zip"; //今天的日期命名
+        }else {
+            dest = logZPath + DateUtil.getDate(1, dateFormat_date) + ".zip"; //昨天的日期命名
+        }
+        try {
+            //传入源文件
+            File outFile = new File(dest);
+            File fileOrDirectory = new File(src);
+            //传入压缩输出流
+            out = new ZipOutputStream(new FileOutputStream(outFile));
+            //判断是否是一个文件或目录
+            //如果是文件则压缩
+            if (fileOrDirectory.isFile()) {
+                zipFileOrDirectory(out, fileOrDirectory, "");
+            } else {
+                File[] entries;
+                if(needCurrTIme){
+                    entries = fileOrDirectory.listFiles();
+                }else {
+                    //否则列出目录中的所有文件递归进行压缩   如存活一天，即今天以前的文件压缩
+                    entries = fileOrDirectory.listFiles(new FilenameFilter() {
+                        @Override
+                        public boolean accept(File dir, String name) {
+                            String s = name.split("\\.")[0];
+                            String date = dateFormat_date.format(new Date());
+                            return s.compareTo(date) < 0;
+                        }
+                    });
+                }
+
+                for (int i = 0; i < entries.length; i++) {
+                    zipFileOrDirectory(out, entries[i], "");
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        return dest;
+    }
+
+    private static void zipFileOrDirectory(ZipOutputStream out, File fileOrDirectory, String curPath) {
+        FileInputStream in = null;
+        try {
+            //判断目录是否为null
+            if (!fileOrDirectory.isDirectory()) {
+                byte[] buffer = new byte[4096];
+                int bytes_read;
+                in = new FileInputStream(fileOrDirectory);
+                //归档压缩目录
+                ZipEntry entry = new ZipEntry(curPath + fileOrDirectory.getName());
+                //将压缩目录写到输出流中
+                out.putNextEntry(entry);
+                while ((bytes_read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytes_read);
+                }
+                out.closeEntry();
+            } else {
+                //列出目录中需要上传的的所有文件
+                File[] entries = fileOrDirectory.listFiles();
+                for (int i = 0; i < entries.length; i++) {
+                    //递归压缩
+                    zipFileOrDirectory(out, entries[i], curPath + fileOrDirectory.getName() + "/");
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    //判断是否有前一天的日志存在，有可以自动上传
+    public boolean needAutoUploadFile() {
+        String filePath = logPath;
+        File file = new File(filePath);
+        String[] filePaths = null;
+        if (!file.exists()) {
+            ToastUtil.showToast("日志目录不存在");
+            return false;
+        }
+        filePaths = file.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                String s = name.split("\\.")[0];
+                String date = dateFormat_date.format(new Date());
+                return s.compareTo(date) < 0;
+            }
+        });
+        return filePaths != null && filePaths.length > 0;
+    }
+
+    public String[] getNeedUploadFiles(Context context) {
+        String filePath = logPath;
+        File file = new File(filePath);
+        String[] filePaths = null;
+        if (!file.exists()) {
+            ToastUtil.showToast("日志目录不存在");
+            return null;
+        }
+        filePaths = file.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                String s = name.split("\\.")[0];
+                String date = dateFormat_date.format(new Date());
+                return s.compareTo(date) < 0;
+            }
+        });
+        return filePaths;
+
+    }
+
+    /**
+     * 文件删除 除今天外的所有文件
+     *
+     */
+    public void autoClear() {
+        String rootFile = logPath;
         File rootF = new File(rootFile);
         if (!rootF.exists()) {
             rootF.mkdirs();
@@ -209,7 +358,8 @@ public class KLogger implements Thread.UncaughtExceptionHandler {
             @Override
             public boolean accept(File dir, String filename) {
                 String s = filename.split("\\.")[0];
-                String date = DateUtil.getDate(autoClearDay, dateFormat_date);
+//                String date = DateUtil.getDate(autoClearDay, dateFormat_date);
+                String date = dateFormat_date.format(new Date());
                 return s.compareTo(date) < 0;
             }
         });
@@ -217,6 +367,19 @@ public class KLogger implements Thread.UncaughtExceptionHandler {
             if (file.isDirectory()) {
             } else {
                 file.delete();
+            }
+        }
+        //删除压缩文件
+        String zippath = logZPath;
+        File file = new File(zippath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        File[] zipFiles = file.listFiles();
+        for (File zipFile : zipFiles) {
+            if (zipFile.isDirectory()) {
+            } else {
+                zipFile.delete();
             }
         }
 

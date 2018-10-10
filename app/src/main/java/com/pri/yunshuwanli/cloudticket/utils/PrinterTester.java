@@ -226,31 +226,31 @@ public class PrinterTester {
         String res = "";
         switch (status) {
             case 0:
-                res = "打印成功 ";
+                res = "打印成功";
                 break;
             case 1:
-                res = "打印机忙 ";
+                res = "打印机忙";
                 break;
             case 2:
-                res = "打印机缺纸 ";
+                res = "打印机缺纸";
                 break;
             case 3:
-                res = "打印数据包格式错 ";
+                res = "打印数据包格式错";
                 break;
             case 4:
-                res = "打印机故障 ";
+                res = "打印机故障";
                 break;
             case 8:
-                res = "打印机过热 ";
+                res = "打印机过热";
                 break;
             case 9:
                 res = "打印机电压过低";
                 break;
             case 240:
-                res = "打印未完成 ";
+                res = "打印未完成";
                 break;
             case 252:
-                res = " 打印机未安装字库  ";
+                res = "打印机未安装字库";
                 break;
             case 254:
                 res = "打印机数据包数据过大 ";

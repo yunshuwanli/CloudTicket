@@ -99,13 +99,9 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:padding="10dp"
-        android:text="关注微信公众号'容津信息'，及时获取发票信息"
+        android:text="关注微信公众号'容津信息'，及时获取发票信息\n"
         android:textColor="@color/tv_text_black"
         android:textSize="16sp"
        />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-       />
 </LinearLayout>

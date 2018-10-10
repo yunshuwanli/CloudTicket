@@ -4,15 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.widget.TextView;
 
 import com.pri.yunshuwanli.cloudticket.R;
 import com.pri.yunshuwanli.cloudticket.entry.User;
 import com.pri.yunshuwanli.cloudticket.entry.UserManager;
-import com.pri.yunshuwanli.cloudticket.utils.KLogger;
+import com.pri.yunshuwanli.cloudticket.logger.KLogger;
 
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +42,26 @@ public class SplashActivity extends MActivity implements HttpCallback<JSONObject
         }
 
 
+//        String root = KLogger.getFilePath(this);
+//        File rootF = new File(root);
+//        if (!rootF.exists()) {
+//            rootF.mkdirs();
+//        }
+//
+//        File file1 = new File(root, "2018-10-04.log");
+//        File file2 = new File(root, "2018-10-05.log");
+//        File file3 = new File(root, "2018-10-06.log");
+//        File file4 = new File(root, "2018-10-03.log");
+//        File file5 = new File(root, "2018-10-02.log");
+//        try {
+//            file1.createNewFile();
+//            file2.createNewFile();
+//            file3.createNewFile();
+//            file4.createNewFile();
+//            file5.createNewFile();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

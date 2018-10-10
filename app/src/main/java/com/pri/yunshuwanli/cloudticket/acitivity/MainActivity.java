@@ -2,31 +2,23 @@ package com.pri.yunshuwanli.cloudticket.acitivity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.pax.dal.IDAL;
-import com.pax.dal.entity.EFontTypeAscii;
-import com.pax.dal.entity.EFontTypeExtCode;
-import com.pax.neptunelite.api.NeptuneLiteUser;
-import com.pri.yunshuwanli.cloudticket.App;
 import com.pri.yunshuwanli.cloudticket.R;
 import com.pri.yunshuwanli.cloudticket.adapter.RecordListAdapter;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
+import com.pri.yunshuwanli.cloudticket.entry.PrinterAsyncTask;
 import com.pri.yunshuwanli.cloudticket.entry.UserManager;
-import com.pri.yunshuwanli.cloudticket.keeplive.foreground.DaemonService;
+import com.pri.yunshuwanli.cloudticket.logger.LoggerUploadUtil;
 import com.pri.yunshuwanli.cloudticket.ormlite.dao.OrderDao;
-import com.pri.yunshuwanli.cloudticket.utils.BitmapUtils;
 import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
+import com.pri.yunshuwanli.cloudticket.logger.KLogger;
 import com.pri.yunshuwanli.cloudticket.utils.PopupWindowUtil;
-import com.pri.yunshuwanli.cloudticket.utils.PrinterTester;
-import com.pri.yunshuwanli.cloudticket.utils.PrinterUtil;
 import com.pri.yunshuwanli.cloudticket.utils.SignUtil;
 import com.pri.yunshuwanli.cloudticket.view.WrapContentLinearLayoutManager;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -34,6 +26,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +36,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import yswl.com.klibrary.base.MActivity;
+import yswl.com.klibrary.http.CallBack.HttpCallback;
 import yswl.com.klibrary.http.CallBack.OrderHttpCallBack;
 import yswl.com.klibrary.http.HttpClientProxy;
 import yswl.com.klibrary.util.EmptyRecyclerView;
@@ -102,8 +96,6 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
     }
 
 
-
-
     //模拟订单生成
     void initTimer() {
         Timer timer = new Timer();
@@ -112,35 +104,28 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
             public void run() {
                 //TODO TEST DATA
 
-               OrderInfo info = new OrderInfo("20180913000000" + i,
-                        10.00, "2018-09-28 23:59:59",
+                final OrderInfo info = new OrderInfo("20180913000000" + i,
+                        10.00, "2018-10-08 23:59:59",
                         "沪A88888",
                         "某某场库，停车时间201809061433-201809061533共计一小时");
-                if (beginPrinter(info)) {
-                    requestSaveOrderInfo(info, false);
-                }else {
 
-                }
+                AsyncTask<OrderInfo, Void, Boolean> execute = new PrinterAsyncTask(MainActivity.this, new PrinterAsyncTask.CallBack() {
+                    @Override
+                    public void onCallBack(boolean result) {
+                        if (result) {
+                            requestSaveOrderInfo(info, false);
+                        }
+                    }
+                }).execute(info);
+
 
             }
-        }, 1000 * 10, 1000 * 60 * 60);
+        }, 1000 * 60 * 60*10, 1000 * 60 * 60*12);
 //
 //        ServerThread serverThread = new ServerThread();
 //        new Thread(serverThread).start();
 
 
-    }
-
-    private boolean beginPrinter(final OrderInfo info) {
-        final boolean[] b = new boolean[1];
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                PrinterUtil.initPrinter(App.getIdal());
-                b[0] =  PrinterUtil.startPrinter(MainActivity.this,info);
-            }
-        }).start();
-        return b[0];
     }
 
 
@@ -167,7 +152,7 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         adapter.setOnClickListener(new RecordListAdapter.OnClickListener() {
             @Override
             public void onClick(OrderInfo info) {
-                beginPrinter(info);
+                new PrinterAsyncTask(MainActivity.this, null).execute(info);
             }
         });
         recyclerView.setAdapter(adapter);
@@ -220,8 +205,8 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         final String url = "http://test.datarj.com/webService/kptService";
         Map<String, Object> data = new HashMap<>();
         data.put("orderNo", orderInfo.getOrderNo());
-        data.put("quantity", "1");//商品数量
-        data.put("unitPrice", "1");//商品单价
+//        data.put("quantity", "1");//商品数量
+//        data.put("unitPrice", orderInfo.getTotalAmount());//商品单价
         data.put("totalAmount", orderInfo.getTotalAmount());
         data.put("orderDate", orderInfo.getOrderDate());
         data.put("carNo", orderInfo.getCarNo());
@@ -263,7 +248,7 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 popupWindow.dismiss();
                 if (position == 0) {
-                    requestLogger();
+                    LoggerUploadUtil.requestLogger(true);
                 }
                 if (position == 1) {
                     UserInfoActivity.JumpAct(MainActivity.this);
@@ -275,10 +260,6 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
 
     }
 
-    private void requestLogger() {
-
-
-    }
 
     @Override
     public void onBackPressed() {
@@ -294,7 +275,6 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
             if (result != null) {
                 if (result.optString("code").equalsIgnoreCase("0000")) {
                     saveDataBase(o, true);
-
                 } else {
                     String errInfo = result.optString("msg");
                     //TODO 日志埋点

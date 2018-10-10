@@ -67,7 +67,7 @@ public class BitmapUtils {
         tv_time.setText(order.getOrderDate().split(" ")[1]);
         tv_carNo.setText(order.getCarNo());
         tv_price.setText(String.valueOf(order.getTotalAmount()));
-        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(SignUtil.getQrCodeUrl(order), width*2/3, width*2/3);
+        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(SignUtil.getQrCodeUrl(order), width, width);
         iv_Code.setImageBitmap(bitmap);
         layoutView(view, width, height);//去到指定view大小的函数
         return loadBitmapFromView(view);

@@ -102,7 +102,7 @@ public class HttpClientProxy implements IRequestMethod<JSONObject> {
             OkHttpClientManager.getSingleInstance().newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Log.e(TAG, "url:" + finalUrl + "\n msg:" + e.getMessage());
+                    L.e(TAG, "url:" + finalUrl + "\n msg:" + e.getMessage());
                     callbackFial(requestId, httpCallback);
                 }
 
@@ -133,7 +133,7 @@ public class HttpClientProxy implements IRequestMethod<JSONObject> {
             OkHttpClientManager.getSingleInstance().newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Log.e(TAG, "url:" + finalUrl + "\n msg:" + e.getMessage());
+                    L.e(TAG, "url:" + finalUrl + "\n msg:" + e.getMessage());
                     if (httpCallback != null)
                         httpCallback.onFail(requestId, e.getMessage(), object);
                 }
@@ -189,7 +189,7 @@ public class HttpClientProxy implements IRequestMethod<JSONObject> {
             OkHttpClientManager.getSingleInstance().newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Log.e(TAG, "url:" + finalUrl + "\n msg:" + e.getMessage());
+                    L.e(TAG, "url:" + finalUrl + "\n msg:" + e.getMessage());
                     callbackFial(requestId, httpCallback);
                 }
 
@@ -229,7 +229,7 @@ public class HttpClientProxy implements IRequestMethod<JSONObject> {
             OkHttpClientManager.getSingleInstance().newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Log.e(TAG, "url:" + finalUrl + "\n msg:" + e.getMessage());
+                    L.e(TAG, "url:" + finalUrl + "\n msg:" + e.getMessage());
                     callbackFial(requestId, httpCallback);
                 }
 
@@ -282,7 +282,7 @@ public class HttpClientProxy implements IRequestMethod<JSONObject> {
         OkHttpClientManager.getSingleInstance().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e(TAG, "url:" + finalUrl + "\n msg:" + e.getMessage());
+                L.e(TAG, "url:" + finalUrl + "\n msg:" + e.getMessage());
                 callbackFial(requestId, httpCallback);
             }
 
@@ -428,7 +428,7 @@ public class HttpClientProxy implements IRequestMethod<JSONObject> {
                 body = response.body().string();
                 if (!TextUtils.isEmpty(body)) {
                     result = new JSONObject(body);
-                    Log.e(TAG, "onSucceed url:" + response.request().url() + "\n +responseCode:" + code + "\n message:" + msg);
+                    L.e(TAG, "onSucceed url:" + response.request().url() + "\n +responseCode:" + code + "\n message:" + msg);
                 } else {
                     code = -103;
                     msg = "数据异常";
@@ -454,7 +454,7 @@ public class HttpClientProxy implements IRequestMethod<JSONObject> {
         final String newMsg = msg;
         final JSONObject newResult = result;
 
-        Log.d(TAG, "onSucceed data:" + result);
+        L.d(TAG, "onSucceed data:" + result);
         MApplication.getApplication().getGolbalHander().post(new Runnable() {
             @Override
             public void run() {

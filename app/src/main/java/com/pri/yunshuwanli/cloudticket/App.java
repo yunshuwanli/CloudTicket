@@ -1,12 +1,11 @@
 package com.pri.yunshuwanli.cloudticket;
 
-import android.content.Context;
 import android.widget.Toast;
-import com.facebook.stetho.Stetho;
-import com.orhanobut.logger.AndroidLogAdapter;
+
 import com.pax.dal.IDAL;
 import com.pax.neptunelite.api.NeptuneLiteUser;
-import com.pri.yunshuwanli.cloudticket.utils.KLogger;
+import com.pri.yunshuwanli.cloudticket.logger.KLogger;
+import com.pri.yunshuwanli.cloudticket.logger.LoggerUploadUtil;
 import com.tencent.bugly.Bugly;
 
 
@@ -36,7 +35,11 @@ public class App extends MApplication {
         Bugly.init(getApplicationContext(), "50d067446d", this.getDebugSetting());
 
 
+
         KLogger.getInstance().init(this);
+        if(LoggerUploadUtil.autoUploadAble()){
+            LoggerUploadUtil.requestLogger(false);
+        }
     }
 
     private void initIDAL() {
