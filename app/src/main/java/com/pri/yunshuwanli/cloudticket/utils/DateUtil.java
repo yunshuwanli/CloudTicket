@@ -41,4 +41,15 @@ public class DateUtil {
         String dayS = formate.format(calendar.getTime());
         return dayS;
     }
+
+    /**
+     * 取得当前时间戳（精确到秒）
+     *
+     * @return nowTimeStamp
+     */
+    public static String getNowTimeStamp() {
+        long time = System.currentTimeMillis();
+        String nowTimeStamp = String.valueOf(time / 1000);
+        return nowTimeStamp;
+    }
 }

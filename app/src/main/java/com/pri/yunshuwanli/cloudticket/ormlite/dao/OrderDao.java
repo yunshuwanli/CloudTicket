@@ -7,6 +7,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
+import com.pri.yunshuwanli.cloudticket.logger.KLogger;
 import com.pri.yunshuwanli.cloudticket.ormlite.DatabaseHelper;
 import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
 
@@ -14,6 +15,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class OrderDao {
+
+    private static final String TAG = OrderDao.class.getSimpleName();
     Context context;
     private Dao<OrderInfo, Integer> userDaoOpe;
     private DatabaseHelper helper;
@@ -37,6 +40,8 @@ public class OrderDao {
             userDaoOpe.createIfNotExists(orderInfo);
         } catch (SQLException e) {
             e.printStackTrace();
+            KLogger.e(TAG, "-----订单数据add本地数据库错误---msg:" + e.getMessage() +
+                    "\n------订单信息为：" + orderInfo.toString());
         }
 
     }
@@ -46,10 +51,18 @@ public class OrderDao {
             userDaoOpe.update(orderInfo);
         } catch (SQLException e) {
             e.printStackTrace();
+            KLogger.e(TAG, "-----订单数据updata本地数据库错误---msg:" + e.getMessage() +
+                    "\n------订单信息为：" + orderInfo.toString());
         }
 
     }
 
+
+    /**
+     * 查询day天以前的数据
+     *
+     * @param day
+     */
     public synchronized void deleteNDayBefore(int day) {
         try {
             String dayS = DateUtil.getDate(day);
@@ -59,32 +72,46 @@ public class OrderDao {
             builder.delete();
         } catch (SQLException e) {
             e.printStackTrace();
+            KLogger.e(TAG, "-----订单数据deleteNDayBefore删除本地数据库错误---msg:" + e.getMessage());
         }
 
     }
 
+    /**
+     * 查询day天以前的数据
+     *
+     * @param day
+     */
     public List<OrderInfo> queryOrderNDayBefore(int day) {
         String dayS = DateUtil.getDate(day);
         try {
             return userDaoOpe.queryBuilder().where().le("orderDate", dayS).query();
         } catch (SQLException e) {
             e.printStackTrace();
+            KLogger.e(TAG, "-----订单数据queryOrderNDayBefore查询本地数据库错误---msg:" + e.getMessage());
+
         }
         return null;
 
     }
 
-    //查询失败订单
+    /**
+     * 查询失败订单
+     */
     public List<OrderInfo> queryOrderInfoUpdataFail() {
         try {
             return userDaoOpe.queryBuilder().where().eq("isUpdate", false).query();
         } catch (SQLException e) {
             e.printStackTrace();
+            KLogger.e(TAG, "-----上传失败的订单数据查询错误---msg:" + e.getMessage());
+
         }
         return null;
     }
 
-    //查询时间段内的订单数据 单位天
+    /**
+     * 查询时间段内的订单数据 单位天
+     */
     public List<OrderInfo> queryOrderOfTime(int day) {
         try {
             String today = DateUtil.getTodayDate();
@@ -94,6 +121,7 @@ public class OrderDao {
             return builder.orderBy("orderDate", false).where().between("orderDate", dayS, today).query();
         } catch (SQLException e) {
             e.printStackTrace();
+            KLogger.e(TAG, "-----查询单位时间段内queryOrderOfTime数据错误---msg:" + e.getMessage());
         }
         return null;
     }
@@ -104,6 +132,9 @@ public class OrderDao {
             return userDaoOpe.queryBuilder().where().eq("carNo", s).query();
         } catch (SQLException e) {
             e.printStackTrace();
+            KLogger.e(TAG, "-----车牌号查询错误-----msg:" + e.getMessage() +
+                    "\n ------车牌号：" + s);
+
         }
         return null;
     }
@@ -129,6 +160,8 @@ public class OrderDao {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            KLogger.e(TAG, "-----删除指定订单数据错误-----msg:" + e.getMessage()
+            );
         }
     }
 
@@ -138,6 +171,8 @@ public class OrderDao {
             return userDaoOpe.queryForAll();
         } catch (SQLException e) {
             e.printStackTrace();
+            KLogger.e(TAG, "-----查询所有订单数据错误-----msg:" + e.getMessage());
+
         }
         return null;
     }

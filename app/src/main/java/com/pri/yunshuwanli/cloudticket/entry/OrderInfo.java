@@ -58,7 +58,7 @@ public class OrderInfo implements Parcelable {
     }
 
     @DatabaseField
-    private String orderNo;//订单号
+    private String orderNo;//订单号  开票点代码+unixtimestamp
     @DatabaseField
     private double totalAmount;//总金额
     @DatabaseField
@@ -92,7 +92,20 @@ public class OrderInfo implements Parcelable {
         this.printStatue = printStatue;
     }
 
-
+    @Override
+    public String toString() {
+        return "OrderInfo{" +
+                "id=" + id +
+                ", orderNo='" + orderNo + '\'' +
+                ", totalAmount=" + totalAmount +
+                ", orderDate='" + orderDate + '\'' +
+                ", carNo='" + carNo + '\'' +
+                ", remark='" + remark + '\'' +
+                ", payType='" + payType + '\'' +
+                ", isUpdate=" + isUpdate +
+                ", printStatue=" + printStatue +
+                '}';
+    }
 
     public String getPayType() {
         return payType;

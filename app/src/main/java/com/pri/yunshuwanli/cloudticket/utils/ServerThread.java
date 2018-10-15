@@ -1,5 +1,7 @@
 package com.pri.yunshuwanli.cloudticket.utils;
 
+import com.pri.yunshuwanli.cloudticket.logger.KLogger;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -29,9 +31,9 @@ public class ServerThread implements Runnable {
     public ServerThread() {
         try {
             serverSocket = new ServerSocket(PORT);
-            L.d(TAG," 服务器启动");
+            KLogger.i(TAG,"-----ServerSocket启动----");
         } catch (IOException e1) {
-            L.e(TAG," 服务器启动失败 "+e1.getMessage());
+            KLogger.e(TAG,"-----ServerSocket启动失败---- msg:"+e1.getMessage());
             e1.printStackTrace();
         }
     }
@@ -45,7 +47,7 @@ public class ServerThread implements Runnable {
         while (true) {
             try {
                 client = serverSocket.accept();
-                L.e(TAG,"已经获取到客户端...");
+                KLogger.i(TAG,"-----Server获取到客户端Socket----");
                 //把客户端放入客户端集合中
 //                mExecutorService.execute(new Service(client)); //启动一个新的线程来处理连接
 
@@ -56,7 +58,7 @@ public class ServerThread implements Runnable {
                 int len;
                 while ((len = is.read(buffer)) != -1) {
                     text = new String(buffer, 0, len);
-                    L.e(TAG,"收到的数据为：" + text);
+                    KLogger.i(TAG,"-----获取到数据为----"+text);
                     ToastUtil.showToast("接收到数据："+text);
 //                    if() //拿到数据 结束 关闭这个socket
                 }
@@ -75,7 +77,7 @@ public class ServerThread implements Runnable {
 
             } catch (IOException e) {
                 //连接客户端socket失败
-                L.e(TAG,"连接客户端socket失败");
+                KLogger.e(TAG,"-----连接客户端socket失败---- msg:"+e.getMessage());
             }
         }
 

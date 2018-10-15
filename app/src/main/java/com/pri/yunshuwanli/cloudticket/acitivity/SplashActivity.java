@@ -111,18 +111,24 @@ public class SplashActivity extends MActivity implements HttpCallback<JSONObject
                 UserManager.setUser(user);
                 next();
             } else {
-                UserManager.setUid("");
-                ToastUtil.showToast("获取初始化信息失败 code:" + result.optString("msg"));
+                KLogger.e(TAG, "-----设备获取初始化信息失败，msg : " +
+                        "\n -----msg: " + result.toString() +
+                        "\n -----uid" + UserManager.getUID());
+                ToastUtil.showToast("获取初始化信息失败");
+                saveUid("");
+
             }
         }
     }
 
     @Override
     public void onFail(int requestId, String errorMsg) {
-        UserManager.setUid("");
-        KLogger.d("Cloud", "根据uid获取信息失败，uid : " +
-                UserManager.getUID() + " msg: " + errorMsg);
-        ToastUtil.showToast("获取初始化信息失败 " + errorMsg);
+        KLogger.e(TAG, "-----获取初始化信息失败: " +
+                "\n----- msg: " + errorMsg +
+                "\n----- uid：" + UserManager.getUID()
+        );
+        ToastUtil.showToast("网络错误，请重试... ");
+        saveUid("");
     }
 
     private void saveUid(String uid) {

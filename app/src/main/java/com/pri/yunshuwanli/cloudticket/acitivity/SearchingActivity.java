@@ -17,6 +17,7 @@ import com.pri.yunshuwanli.cloudticket.R;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
 import com.pri.yunshuwanli.cloudticket.entry.UserManager;
 import com.pri.yunshuwanli.cloudticket.fragment.ListFragment;
+import com.pri.yunshuwanli.cloudticket.logger.KLogger;
 import com.pri.yunshuwanli.cloudticket.ormlite.dao.OrderDao;
 import com.pri.yunshuwanli.cloudticket.utils.CarKeyboardUtil;
 import com.pri.yunshuwanli.cloudticket.utils.SignUtil;
@@ -39,6 +40,9 @@ import yswl.com.klibrary.util.GsonUtil;
 import yswl.com.klibrary.util.MKeyBoardUtils;
 import yswl.com.klibrary.util.ToastUtil;
 
+/**
+ * 搜索
+ */
 public class SearchingActivity extends MActivity implements HttpCallback<JSONObject>, View.OnTouchListener {
     private static final String TAG = SearchingActivity.class.getSimpleName();
 
@@ -81,7 +85,6 @@ public class SearchingActivity extends MActivity implements HttpCallback<JSONObj
                     serchBoxView.getEditText().setFilters(new InputFilter[]{new InputFilter.LengthFilter(7)});
                 }else{
                     serchBoxView.getEditText().setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
-
                 }
             }
 
@@ -155,14 +158,22 @@ public class SearchingActivity extends MActivity implements HttpCallback<JSONObj
                 ArrayList<OrderInfo> infos = OrderInfo.jsonToList(data.optJSONArray("orderList"));
                 showResultUI(infos);
             } else {
-                result.optString("msg");
+                KLogger.e(TAG, "-----车牌搜索订单失败: " +
+                        "\n----- msg: " + result.toString()+
+                        "\n----- 车牌号："+serchBoxView.getEditText().getText().toString().trim()
+
+                );
             }
         }
     }
 
     @Override
     public void onFail(int requestId, String errorMsg) {
-
+        ToastUtil.showToast("网络错误，请重试");
+        KLogger.e(TAG, "-----车牌搜索订单失败: " +
+                "\n----- msg: " + errorMsg+
+                "\n----- 车牌号："+serchBoxView.getEditText().getText().toString().trim()
+        );
     }
 
     @Override

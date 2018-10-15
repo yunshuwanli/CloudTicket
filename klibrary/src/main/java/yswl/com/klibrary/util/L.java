@@ -65,6 +65,14 @@ public class L {
         if (DEGUG) android.util.Log.i(TAG, msg);
     }
 
+    public static void w(String tag, String msg) {
+        if (DEGUG) android.util.Log.w(tag, msg);
+    }
+
+    public static void w(String msg) {
+        if (DEGUG) android.util.Log.w(TAG, msg);
+    }
+
     public static void printDeviceInfo(Context ctx) {
         if (DEGUG) {
             int width = MScreenUtils.getScreenWidth(ctx);

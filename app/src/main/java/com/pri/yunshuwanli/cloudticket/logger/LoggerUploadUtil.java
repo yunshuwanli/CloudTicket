@@ -16,21 +16,24 @@ import yswl.com.klibrary.http.HttpClientProxy;
 import yswl.com.klibrary.util.L;
 import yswl.com.klibrary.util.ToastUtil;
 
+
 public class LoggerUploadUtil {
+
+    private static final String TAG = LoggerUploadUtil.class.getSimpleName();
 
     /**
      * 满足自动上传日志 必须已经获取user信息
+     *
      * @return
      */
-    public static boolean autoUploadAble(){
-        return KLogger.getInstance().needAutoUploadFile() && !TextUtils.isEmpty(UserManager.getUID()) && (UserManager.getUser()!=null);
+    public static boolean autoUploadAble() {
+        return KLogger.getInstance().needAutoUploadFile() && !TextUtils.isEmpty(UserManager.getUID()) && (UserManager.getUser() != null);
     }
 
     public static void requestLogger(boolean needUploadCurrTime) {
         String url = "http://test.datarj.com/webService/logService/fileUpload";
         Map<String, Object> params = new HashMap<>();
-
-        String zipfilePath = KLogger.getInstance().getZipFile(KLogger.getFilePath(App.getApplication()),needUploadCurrTime);
+        String zipfilePath = KLogger.getInstance().getZipFile(KLogger.getFilePath(App.getApplication()), needUploadCurrTime);
         params.put("file", new File(zipfilePath));
         params.put("gsdm", UserManager.getUser().getGsdm());
         params.put("kpddm", UserManager.getUser().getClientNo());
@@ -38,20 +41,24 @@ public class LoggerUploadUtil {
         HttpClientProxy.getInstance().postMultipart(url, 1, params, new HttpCallback<JSONObject>() {
             @Override
             public void onSucceed(int requestId, JSONObject result) {
-                L.e("result"+result);
-                if(result.optString("code").equals("0000")){
+                L.e("result" + result);
+                if (result.optString("code").equals("0000")) {
                     ToastUtil.showToast("上传成功");
                     KLogger.getInstance().autoClear();
-                }else {
-                    String msg = result.optString("msg");
-                    ToastUtil.showToast("msg");
+                } else {
+                    ToastUtil.showToast("日志上传失败");
+                    KLogger.e(TAG, "-----日志上传失败: " +
+                            "\n----- msg: " + result.toString()
+                    );
                 }
             }
 
             @Override
             public void onFail(int requestId, String errorMsg) {
-                L.e("日志上传失败");
-
+                ToastUtil.showToast("网络错误，请重试");
+                KLogger.e(TAG, "-----日志上传失败: " +
+                        "\n----- msg: " + errorMsg
+                );
             }
         });
 

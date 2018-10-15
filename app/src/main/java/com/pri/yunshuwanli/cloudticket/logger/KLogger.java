@@ -104,22 +104,27 @@ public class KLogger implements Thread.UncaughtExceptionHandler {
     private static final char ERROR = 'e';
 
     public static void v(String tag, String msg) {
+        L.v(tag,msg);
         writeToFile(VERBOSE, tag, msg);
     }
 
     public static void d(String tag, String msg) {
+        L.d(tag,msg);
         writeToFile(DEBUG, tag, msg);
     }
 
     public static void i(String tag, String msg) {
+        L.i(tag,msg);
         writeToFile(INFO, tag, msg);
     }
 
     public static void w(String tag, String msg) {
+        L.w(tag,msg);
         writeToFile(WARN, tag, msg);
     }
 
     public static void e(String tag, String msg) {
+        L.e(tag,msg);
         writeToFile(ERROR, tag, msg);
     }
 

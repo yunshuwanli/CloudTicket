@@ -17,7 +17,7 @@ public class User implements Serializable{
     /**
      * gsdm : hcz
      * appId : RJ10a9117ed9ae
-     * clientNo : hcz001
+     * clientNo : hcz001  //开票点代码
      * key : 6f20efe130923de16e1619b3087a6f4a
      * gsmc : 上海火车站南站
      * kpdmc : 火车站南广场停车场

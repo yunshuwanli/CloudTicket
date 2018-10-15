@@ -24,6 +24,7 @@ public class PrinterAsyncTask extends AsyncTask<OrderInfo,Void,Boolean> {
         super.onPreExecute();
     }
 
+
     @Override
     protected Boolean doInBackground(OrderInfo... infos) {
         PrinterUtil.initPrinter(App.getIdal());

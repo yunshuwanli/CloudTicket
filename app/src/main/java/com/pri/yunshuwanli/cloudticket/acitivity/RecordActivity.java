@@ -25,6 +25,7 @@ import yswl.com.klibrary.base.MActivity;
 import yswl.com.klibrary.http.HttpClientProxy;
 import yswl.com.klibrary.util.EmptyRecyclerView;
 
+@Deprecated
 public class RecordActivity extends MActivity {
 
     public static final String TYPE = "TYPE";//数据库内未查询到数据，服务端查询结果展示

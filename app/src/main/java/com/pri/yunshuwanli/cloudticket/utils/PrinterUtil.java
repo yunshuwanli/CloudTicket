@@ -7,16 +7,58 @@ import android.os.Looper;
 import com.pax.dal.IDAL;
 import com.pax.dal.entity.EFontTypeAscii;
 import com.pax.dal.entity.EFontTypeExtCode;
+import com.pax.neptunelite.api.NeptuneLiteUser;
 import com.pri.yunshuwanli.cloudticket.App;
 import com.pri.yunshuwanli.cloudticket.acitivity.MainActivity;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
+import com.pri.yunshuwanli.cloudticket.logger.KLogger;
 
 import yswl.com.klibrary.util.L;
 import yswl.com.klibrary.util.ToastUtil;
 
 public class PrinterUtil {
 
+    private static final String TAG = PrinterUtil.class.getSimpleName();
+
     public static void initPrinter(IDAL idal) {
+        if(idal==null){
+            try {
+                idal = NeptuneLiteUser.getInstance().getDal(App.getApplication().getApplicationContext());
+            } catch (Exception e) {
+                e.printStackTrace();
+                KLogger.e(TAG,"----- 初始化打印失败 ："+e.getMessage());
+            }
+        }
+        PrinterTester.getInstance().init(idal);
+        PrinterTester.getInstance().fontSet(EFontTypeAscii.FONT_16_24, EFontTypeExtCode.FONT_24_24);
+        PrinterTester.getInstance().spaceSet(Byte.parseByte("1"), Byte.parseByte("0"));
+        PrinterTester.getInstance().leftIndents(Short.parseShort("0"));
+        PrinterTester.getInstance().setGray(Integer.parseInt("4"));
+        PrinterTester.getInstance().setInvert(false);
+        PrinterTester.getInstance().step(Integer.parseInt("50"));
+    }
+
+    public static boolean startPrinter(Activity activity, OrderInfo info) {
+        Bitmap bitmap = BitmapUtils.getTicktBitmap(activity, info);
+        PrinterTester.getInstance().printBitmap(bitmap);
+        PrinterTester.getInstance().printStr("\n \n \n \n", null);
+
+        final String status = PrinterTester.getInstance().start();
+//            PrinterTester.getInstance().
+        KLogger.i(TAG,"-----打印完成状态------：" + status);
+        if (status.equals("打印成功")) {
+            return true;
+        }
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtil.showToast(status);
+            }
+        });
+        return false;
+    }
+
+    public static String startPrinter2(OrderInfo order) {
         PrinterTester.getInstance().init(App.getIdal());
 
         PrinterTester.getInstance().fontSet(EFontTypeAscii.FONT_16_24, EFontTypeExtCode.FONT_24_24);
@@ -24,28 +66,13 @@ public class PrinterUtil {
         PrinterTester.getInstance().leftIndents(Short.parseShort("0"));
         PrinterTester.getInstance().setGray(Integer.parseInt("4"));
         PrinterTester.getInstance().setInvert(false);
-//        PrinterTester.getInstance().printStr("       \n   \n", null);
-        PrinterTester.getInstance().step(Integer.parseInt( "200"));
-    }
-
-    public static boolean startPrinter(Activity activity, OrderInfo info) {
-        Bitmap bitmap = BitmapUtils.getTicktBitmap(activity, info);
-        PrinterTester.getInstance().printBitmap(bitmap);
+        PrinterTester.getInstance().printStr("  ", null);
+        PrinterTester.getInstance().step(Integer.parseInt("200"));
+//        Bitmap bitmap = BitmapUtils.getTicktBitmap(activity, info);
+//        PrinterTester.getInstance().printBitmap(bitmap);
 //        PrinterTester.getInstance().printStr("\n 打印测试语句ABCabc123~!#$富豪コンピュータ", null);
 
         String status = PrinterTester.getInstance().start();
-//            PrinterTester.getInstance().
-        L.d("打印完成状态：" + status);
-        if (status.equals("打印成功")) {
-            return true;
-        }
-        if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
-            Looper.prepare();
-            ToastUtil.showToast(status);
-            Looper.loop();
-        } else {
-            ToastUtil.showToast(status);
-        }
-        return false;
+        return status;
     }
 }

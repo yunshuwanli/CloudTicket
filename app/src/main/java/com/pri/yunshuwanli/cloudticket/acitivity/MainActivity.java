@@ -19,6 +19,7 @@ import com.pri.yunshuwanli.cloudticket.ormlite.dao.OrderDao;
 import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
 import com.pri.yunshuwanli.cloudticket.logger.KLogger;
 import com.pri.yunshuwanli.cloudticket.utils.PopupWindowUtil;
+import com.pri.yunshuwanli.cloudticket.utils.ServerThread;
 import com.pri.yunshuwanli.cloudticket.utils.SignUtil;
 import com.pri.yunshuwanli.cloudticket.view.WrapContentLinearLayoutManager;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -36,12 +37,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import yswl.com.klibrary.base.MActivity;
-import yswl.com.klibrary.http.CallBack.HttpCallback;
 import yswl.com.klibrary.http.CallBack.OrderHttpCallBack;
 import yswl.com.klibrary.http.HttpClientProxy;
 import yswl.com.klibrary.util.EmptyRecyclerView;
 import yswl.com.klibrary.util.GsonUtil;
-import yswl.com.klibrary.util.L;
 import yswl.com.klibrary.util.ToastUtil;
 
 public class MainActivity extends MActivity implements View.OnClickListener, OrderHttpCallBack {
@@ -82,7 +81,6 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         initView();
         initTimer();
         initDataBase();
-
     }
 
     private void initDataBase() {
@@ -102,7 +100,6 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                //TODO TEST DATA
 
                 final OrderInfo info = new OrderInfo("20180913000000" + i,
                         10.00, "2018-10-08 23:59:59",
@@ -122,8 +119,8 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
             }
         }, 1000 * 60 * 60*10, 1000 * 60 * 60*12);
 //
-//        ServerThread serverThread = new ServerThread();
-//        new Thread(serverThread).start();
+        ServerThread serverThread = new ServerThread();
+        new Thread(serverThread).start();
 
 
     }
@@ -169,7 +166,6 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
             @Override
             public void run() {
                 ondayOrders = new OrderDao(MainActivity.this).queryOrderOfTime(10);
-                L.e(TAG, "data size: " + ondayOrders.size());
                 MainActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -274,22 +270,31 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         if (requestId == HTTP_REQUEST_ID) {
             if (result != null) {
                 if (result.optString("code").equalsIgnoreCase("0000")) {
+                    //保存数据库
                     saveDataBase(o, true);
                 } else {
                     String errInfo = result.optString("msg");
                     //TODO 日志埋点
-                    //logutil
+                    String detailInfo = o.toString();
+                    KLogger.e(TAG,"-----订单请求失败-----" +
+                            "\n------返回结果:" +result.toString()+
+                            "\n ------订单详情："+detailInfo);
                     ToastUtil.showToast(errInfo);
+                    //失败数据保存数据库
                     saveDataBase(o, false);
                 }
             }
 
-        } else {//失败的数据
+        } else {//第一次上传失败数据 的请求结果
             if (result != null && result.optString("code").equalsIgnoreCase("0000")) {
                 updataDataBase(o, true);
             } else {
                 String errInfo = result.optString("msg");
+                String detailInfo = o.toString();
                 //TODO 日志埋点
+                KLogger.e(TAG,"-----订单请求失败-----" +
+                        "\n------返回结果:" +result.toString()+
+                        "\n ------订单详情："+detailInfo);
             }
         }
     }
@@ -341,6 +346,11 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
     @Override
     public void onFail(int requestId, String errorMsg, Object o) {
         ToastUtil.showToast("网络错误");
+        String detailInfo = o.toString();
+        //TODO 日志埋点
+        KLogger.e(TAG,"-----订单请求失败-----" +
+                "\n------返回结果:" +errorMsg+
+                "\n ------订单详情："+detailInfo);
         if (requestId == HTTP_REQUEST_ID) {
             saveDataBase(o, false);
         } else {
