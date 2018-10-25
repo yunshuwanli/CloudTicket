@@ -11,7 +11,11 @@ import com.pax.neptunelite.api.NeptuneLiteUser;
 import com.pri.yunshuwanli.cloudticket.App;
 import com.pri.yunshuwanli.cloudticket.acitivity.MainActivity;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
+import com.pri.yunshuwanli.cloudticket.entry.PrinterBean;
+import com.pri.yunshuwanli.cloudticket.entry.User;
 import com.pri.yunshuwanli.cloudticket.logger.KLogger;
+
+import java.util.List;
 
 import yswl.com.klibrary.util.L;
 import yswl.com.klibrary.util.ToastUtil;
@@ -38,7 +42,26 @@ public class PrinterUtil {
         PrinterTester.getInstance().step(Integer.parseInt("50"));
     }
 
-    public static boolean startPrinter(Activity activity, OrderInfo info) {
+    public static boolean startShappingPrinter(Activity activity, PrinterBean bean, String url) {
+        Bitmap bitmap = BitmapUtils.getShappingBitmap(activity, bean,url);
+        PrinterTester.getInstance().printBitmap(bitmap);
+        PrinterTester.getInstance().printStr("\n \n \n \n", null);
+
+        final String status = PrinterTester.getInstance().start();
+        KLogger.i(TAG,"-----打印完成状态------：" + status);
+        if (status.equals("打印成功")) {
+            return true;
+        }
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtil.showToast(status);
+            }
+        });
+        return false;
+    }
+
+    public static boolean startCarPrinter(Activity activity, OrderInfo info) {
         Bitmap bitmap = BitmapUtils.getTicktBitmap(activity, info);
         PrinterTester.getInstance().printBitmap(bitmap);
         PrinterTester.getInstance().printStr("\n \n \n \n", null);
@@ -56,23 +79,5 @@ public class PrinterUtil {
             }
         });
         return false;
-    }
-
-    public static String startPrinter2(OrderInfo order) {
-        PrinterTester.getInstance().init(App.getIdal());
-
-        PrinterTester.getInstance().fontSet(EFontTypeAscii.FONT_16_24, EFontTypeExtCode.FONT_24_24);
-        PrinterTester.getInstance().spaceSet(Byte.parseByte("1"), Byte.parseByte("0"));
-        PrinterTester.getInstance().leftIndents(Short.parseShort("0"));
-        PrinterTester.getInstance().setGray(Integer.parseInt("4"));
-        PrinterTester.getInstance().setInvert(false);
-        PrinterTester.getInstance().printStr("  ", null);
-        PrinterTester.getInstance().step(Integer.parseInt("200"));
-//        Bitmap bitmap = BitmapUtils.getTicktBitmap(activity, info);
-//        PrinterTester.getInstance().printBitmap(bitmap);
-//        PrinterTester.getInstance().printStr("\n 打印测试语句ABCabc123~!#$富豪コンピュータ", null);
-
-        String status = PrinterTester.getInstance().start();
-        return status;
     }
 }

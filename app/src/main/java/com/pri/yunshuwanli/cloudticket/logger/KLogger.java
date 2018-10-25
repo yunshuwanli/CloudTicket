@@ -10,6 +10,8 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.pri.yunshuwanli.cloudticket.entry.User;
+import com.pri.yunshuwanli.cloudticket.entry.UserManager;
 import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
 
 import java.io.BufferedWriter;
@@ -60,9 +62,9 @@ public class KLogger implements Thread.UncaughtExceptionHandler {
      * 初始化，须在使用之前设置，最好在Application创建时调用
      */
     public void init(Context context) {
-        mContext = context;
-        getFilePath(context);
-        getZipFilePath(context);
+        mContext = context.getApplicationContext();
+        getFilePath(mContext);
+        getZipFilePath(mContext);
         mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this);
 //        autoClear(1);
@@ -313,7 +315,7 @@ public class KLogger implements Thread.UncaughtExceptionHandler {
         File file = new File(filePath);
         String[] filePaths = null;
         if (!file.exists()) {
-            ToastUtil.showToast("日志目录不存在");
+//            ToastUtil.showToast("日志目录不存在");
             return false;
         }
         filePaths = file.list(new FilenameFilter() {
@@ -477,10 +479,19 @@ public class KLogger implements Thread.UncaughtExceptionHandler {
             PackageManager pm = ctx.getPackageManager();
             PackageInfo pi = pm.getPackageInfo(ctx.getPackageName(), PackageManager.GET_ACTIVITIES);
             if (pi != null) {
-                String versionName = pi.versionName + "";
-                String versionCode = pi.versionCode + "";
+                String versionName = pi.versionName ;
+                String versionCode = String.valueOf(pi.versionCode);
+                String uuid = UserManager.getUID();
                 infos.put("versionName", versionName);
                 infos.put("versionCode", versionCode);
+                infos.put("设备唯一号uuid", uuid);
+                if(UserManager.getUser()!=null){
+                    String appid = UserManager.getAppId();
+                    String clientNo = UserManager.getUser().getClientNo();
+                    infos.put("appId", appid);
+                    infos.put("开票点代码", clientNo);
+                }
+
             }
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, "an error occured when collect package info", e);

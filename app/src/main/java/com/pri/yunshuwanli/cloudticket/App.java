@@ -6,6 +6,7 @@ import com.pax.dal.IDAL;
 import com.pax.neptunelite.api.NeptuneLiteUser;
 import com.pri.yunshuwanli.cloudticket.logger.KLogger;
 import com.pri.yunshuwanli.cloudticket.logger.LoggerUploadUtil;
+import com.squareup.leakcanary.LeakCanary;
 import com.tencent.bugly.Bugly;
 
 
@@ -34,9 +35,13 @@ public class App extends MApplication {
         //bugly  日志与版本更新
         Bugly.init(getApplicationContext(), "50d067446d", this.getDebugSetting());
 
-
+//        if (LeakCanary.isInAnalyzerProcess(this)) {
+//            return;
+//        }
+//        LeakCanary.install(this);
 
         KLogger.getInstance().init(this);
+        //启动上传日志
         if(LoggerUploadUtil.autoUploadAble()){
             LoggerUploadUtil.requestLogger(false);
         }

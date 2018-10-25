@@ -54,5 +54,11 @@ public class UserManager {
     }
 
 
+    public static boolean userSimpeQR(){
+        if(getUser()==null)
+            return false;
+        return getUser().getIsStartDWZ().equals("1"); //1启动短连接 0反之
+    }
+
 
 }

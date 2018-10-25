@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -47,6 +48,7 @@ public class OrderInfo implements Parcelable {
      * carNo : 沪 A88888
      * remark : 某某场库,停车时间 201809061433-201809061533 共计一小时
      */
+
 
 
     @DatabaseField(generatedId = true)
@@ -197,4 +199,8 @@ public class OrderInfo implements Parcelable {
             return new OrderInfo[size];
         }
     };
+
+    public static String getOderID(){
+        return UserManager.getUser().getClientNo() + DateUtil.getNowTimeStamp();
+    }
 }

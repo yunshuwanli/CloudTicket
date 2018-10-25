@@ -14,23 +14,27 @@ import android.widget.TextView;
 
 import com.pri.yunshuwanli.cloudticket.R;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
+import com.pri.yunshuwanli.cloudticket.entry.PrinterBean;
+import com.pri.yunshuwanli.cloudticket.entry.User;
 import com.pri.yunshuwanli.cloudticket.entry.UserManager;
 
+import java.util.List;
+
 public class BitmapUtils {
-    public static Bitmap loadBitmapFromView(View v) {
+    private static Bitmap loadBitmapFromView(View v) {
         int w = v.getWidth();
         int h = v.getHeight();
 
-        Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
         Canvas c = new Canvas(bmp);
-        c.drawColor(Color.BLACK);          /** 如果不设置canvas画布为白色，则生成透明 */
+        c.drawColor(Color.WHITE);          /** 如果不设置canvas画布为白色，则生成透明 */
         v.layout(0, 0, w, h);
         v.draw(c);
         return bmp;
     }
 
 
-    public static Bitmap getBitmapFromView(View v) {
+   /* public static Bitmap getBitmapFromView(View v) {
         Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.RGB_565);
         Canvas c = new Canvas(b);
         v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
@@ -43,11 +47,14 @@ public class BitmapUtils {
         // Draw view to canvas
         v.draw(c);
         return b;
-    }
+    }*/
 
 
+    /**
+     * 停车场小票
+     */
     public static Bitmap getTicktBitmap(Activity context, OrderInfo order) {
-        if(context == null || order == null) return  null;
+        if (context == null || order == null) return null;
         DisplayMetrics metric = new DisplayMetrics();
         context.getWindowManager().getDefaultDisplay().getMetrics(metric);
         int width = metric.widthPixels;     // 屏幕宽度（像素）
@@ -67,11 +74,74 @@ public class BitmapUtils {
         tv_time.setText(order.getOrderDate().split(" ")[1]);
         tv_carNo.setText(order.getCarNo());
         tv_price.setText(String.valueOf(order.getTotalAmount()));
-        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(SignUtil.getQrCodeUrl(order), width, width);
+        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(SignUtil.getQrCodeUrl(new PrinterBean(order, null),false), width, width);
         iv_Code.setImageBitmap(bitmap);
         layoutView(view, width, height);//去到指定view大小的函数
         return loadBitmapFromView(view);
     }
+
+    /**
+     * 购买商品小票
+     */
+    public static Bitmap getShappingBitmap(Activity context, PrinterBean bean, String url) {
+        if (context == null) return null;
+        DisplayMetrics metric = new DisplayMetrics();
+        context.getWindowManager().getDefaultDisplay().getMetrics(metric);
+        int width = metric.widthPixels;     // 屏幕宽度（像素）
+        int height = metric.heightPixels;   // 屏幕高度（像素）
+        View view = LayoutInflater.from(context).inflate(R.layout.shapping_ticket_layout, null, false);
+        TextView tv_numb = view.findViewById(R.id.order_numb);
+        TextView tv_date = view.findViewById(R.id.order_date);
+        TextView tv_amount = view.findViewById(R.id.order_amount);
+        ImageView iv_Code = view.findViewById(R.id.qr_code);
+
+        OrderInfo order = bean.info;
+        if (order != null) {
+            tv_date.setText(order.getOrderDate());
+            tv_numb.setText(order.getOrderNo());
+        }
+        List<User.SpListBean> beans = bean.list;
+        double totalAmount = 0;
+        if (beans != null && beans.size() > 0) {
+            for (User.SpListBean bean1 : beans) {
+                totalAmount += bean1.getReal_total();
+            }
+
+        }
+        tv_amount.setText(String.valueOf(totalAmount));
+        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(url, width*2/3, width*2/3);
+        iv_Code.setImageBitmap(bitmap);
+        layoutView(view, width, height);//去到指定view大小的函数
+        return loadBitmapFromView(view);
+    }
+
+    public static Bitmap getTicketBillingBitmap(Activity context, OrderInfo order) {
+        if (context == null || order == null) return null;
+        DisplayMetrics metric = new DisplayMetrics();
+        context.getWindowManager().getDefaultDisplay().getMetrics(metric);
+        int width = metric.widthPixels;     // 屏幕宽度（像素）
+        int height = metric.heightPixels;   // 屏幕高度（像素）
+        View view = LayoutInflater.from(context).inflate(R.layout.ticket_layout, null, false);
+        TextView tv_name = view.findViewById(R.id.name);
+        TextView tv_date = view.findViewById(R.id.date);
+        TextView tv_time = view.findViewById(R.id.time);
+        TextView tv_carNo = view.findViewById(R.id.carNo);
+        TextView tv_price = view.findViewById(R.id.price);
+//        TextView tv_hint = view.findViewById(R.id.hint);
+        ImageView iv_Code = view.findViewById(R.id.qr_code);
+
+
+        tv_name.setText(UserManager.getUser().getKpdmc());
+        tv_date.setText(order.getOrderDate().split(" ")[0]);
+        tv_time.setText(order.getOrderDate().split(" ")[1]);
+        tv_carNo.setText(order.getCarNo());
+        tv_price.setText(String.valueOf(order.getTotalAmount()));
+        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(SignUtil.getQrCodeUrl(new PrinterBean(order, null),false), width, width);
+        iv_Code.setImageBitmap(bitmap);
+        layoutView(view, width, height);//去到指定view大小的函数
+        return loadBitmapFromView(view);
+    }
+
 
     private static void layoutView(View v, int width, int height) {
         // 指定整个View的大小 参数是左上角 和右下角的坐标

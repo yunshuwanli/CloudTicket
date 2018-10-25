@@ -102,7 +102,7 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
             public void run() {
 
                 final OrderInfo info = new OrderInfo("20180913000000" + i,
-                        10.00, "2018-10-08 23:59:59",
+                        10.00, "2018-10-23 23:59:59",
                         "沪A88888",
                         "某某场库，停车时间201809061433-201809061533共计一小时");
 
@@ -117,7 +117,7 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
 
 
             }
-        }, 1000 * 60 * 60*10, 1000 * 60 * 60*12);
+        }, 1000 * 10*20*1000, 1000 * 60 * 60*12);
 //
         ServerThread serverThread = new ServerThread();
         new Thread(serverThread).start();
@@ -222,7 +222,7 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.billing) {
-            BillingActivity.JumpAct(MainActivity.this);
+            GoodsListActivity.JumpAct(MainActivity.this);
         }
         if (v.getId() == R.id.search) {
             SearchingActivity.JumpAct(MainActivity.this);

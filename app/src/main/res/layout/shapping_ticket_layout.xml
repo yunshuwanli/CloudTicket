@@ -8,60 +8,37 @@
     android:orientation="vertical">
 
 
-    <TextView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_height="60dp"
+        app:srcCompat="@mipmap/head"
         android:gravity="center"
-        android:padding="10dp"
-        android:text="天地软件停车场"
         android:textColor="@color/tv_text_main"
-        android:textSize="18sp" />
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingBottom="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="2018-09-01"
-                android:textColor="@color/tv_text_black" />
-
-            <TextView
-                android:id="@+id/time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="14:22"
-                android:textColor="@color/tv_text_black" />
-        </LinearLayout>
 
         <TextView
-            android:id="@+id/carNo"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="center"
-            android:text="沪A88888"
+            android:text="订单日期："
             android:textColor="@color/tv_text_black"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/price"
-            android:layout_width="0dp"
+            android:id="@+id/order_date"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="center"
             android:text="15.00"
             android:textColor="@color/tv_text_black"
@@ -71,6 +48,70 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingBottom="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="订单编号："
+            android:textColor="@color/tv_text_black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/order_numb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="15.00"
+            android:textColor="@color/tv_text_black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingBottom="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="订单金额："
+            android:textColor="@color/tv_text_black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/order_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="15.00"
+            android:textColor="@color/tv_text_black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+<View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_margin="10dp"
+    android:background="@drawable/line_dashes"/>
     <TextView
         android:id="@+id/hint"
         android:layout_width="wrap_content"
@@ -79,19 +120,15 @@
         android:padding="10dp"
         android:text="使用支付宝或微信扫描下方二维码（有效期30天），根据指引步骤开具您的增值税电子普通发票"
         android:textColor="@color/tv_text_black"
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/qr_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        app:srcCompat="@mipmap/ic_launcher" />
+        app:srcCompat="@mipmap/ic_serch" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/app_bg2" />
 
     <TextView
         android:layout_width="match_parent"
@@ -101,7 +138,7 @@
         android:text="关注微信公众号'容津信息'，及时获取发票信息使用支付宝开具电子发票可以获得蚂蚁森林5g能量"
         android:textColor="@color/tv_text_black"
         android:textSize="18sp"
-       />
+        />
 
     <TextView
         android:layout_width="match_parent"
@@ -119,4 +156,5 @@
         android:textColor="@color/tv_text_black"
         android:textSize="18sp"
         />
+
 </LinearLayout>

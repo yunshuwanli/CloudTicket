@@ -141,7 +141,7 @@ public class HttpClientProxy implements IRequestMethod<JSONObject> {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     if (httpCallback != null && response.isSuccessful()) {
-                       final String body = response.body().string();
+                        final String body = response.body().string();
                         if (!TextUtils.isEmpty(body)) {
                             MApplication.getApplication().getGolbalHander().post(new Runnable() {
                                 @Override

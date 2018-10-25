@@ -7,6 +7,7 @@ import java.util.Date;
 public class DateUtil {
 
     public static final String FORMATE = "yyyy-MM-dd HH:mm:ss";
+    public static final String FORMATE3 = "yyyyMMddHHmmss";
     public static final String FORMATE2 = "yyyy-MM-dd";
 
     public static  String getTodayDate2(){
@@ -16,6 +17,10 @@ public class DateUtil {
     }
     public static  String getTodayDate(){
         SimpleDateFormat sdf = new SimpleDateFormat(FORMATE);
+        String date = sdf.format(new Date());
+        return date;
+    }public static  String getTodayDate3(){
+        SimpleDateFormat sdf = new SimpleDateFormat(FORMATE3);
         String date = sdf.format(new Date());
         return date;
     }

@@ -6,16 +6,20 @@ import android.os.AsyncTask;
 import com.pri.yunshuwanli.cloudticket.App;
 import com.pri.yunshuwanli.cloudticket.utils.PrinterUtil;
 
-public class PrinterAsyncTask extends AsyncTask<OrderInfo,Void,Boolean> {
+import java.util.List;
+import java.util.Map;
 
-    public interface CallBack{
+public class PrinterShappingAsyncTask extends AsyncTask<Map<String, Object>, Void, Boolean> {
+
+    public interface CallBack {
         void onCallBack(boolean result);
     }
 
     Activity activity;
     CallBack callBack;
-    public PrinterAsyncTask(Activity activity,CallBack callBack) {
-        this.activity  = activity;
+
+    public PrinterShappingAsyncTask(Activity activity, CallBack callBack) {
+        this.activity = activity;
         this.callBack = callBack;
     }
 
@@ -26,16 +30,19 @@ public class PrinterAsyncTask extends AsyncTask<OrderInfo,Void,Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(OrderInfo... infos) {
+    protected Boolean doInBackground(Map<String, Object>... infos) {
         PrinterUtil.initPrinter(App.getIdal());
-        boolean b = PrinterUtil.startCarPrinter(activity,infos[0]);
+        Map<String, Object> pa = infos[0];
+        String url = (String) pa.get("url");
+        PrinterBean data = (PrinterBean) pa.get("data");
+        boolean b = PrinterUtil.startShappingPrinter(activity, data, url);
         return b;
     }
 
 
     @Override
     protected void onPostExecute(Boolean res) {
-        if(callBack!=null)
+        if (callBack != null)
             callBack.onCallBack(res);
     }
 }

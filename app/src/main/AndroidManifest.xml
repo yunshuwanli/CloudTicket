@@ -49,15 +49,20 @@
             android:name=".acitivity.MainActivity"
             android:launchMode="singleTask" />
         <activity android:name=".acitivity.BillingActivity" />
-        <activity android:name=".acitivity.RecordActivity" />
-        <activity android:name=".acitivity.SearchingActivity" />
-        <activity android:name=".acitivity.UserInfoActivity" />
-        <activity android:name=".acitivity.UIDSettingActivity" />
-
-        <activity android:name=".acitivity.MainTestActivity">
-
-        </activity>
-
+        <activity
+            android:name=".acitivity.RecordActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".acitivity.SearchingActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".acitivity.UserInfoActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".acitivity.UIDSettingActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".acitivity.MainTestActivity"></activity>
+        <activity android:name=".acitivity.ShappingListActivity"></activity>
 
         <!-- ************保活************ -->
 
@@ -73,16 +78,16 @@
         <service
             android:name=".keeplive.foreground.ChannelService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
         <service
             android:name=".keeplive.foreground.DaemonService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
         <service
             android:name=".keeplive.timer.ScheduleService"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE"></service>
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver android:name=".keeplive.broadcast.MonitorReceiver">
             <intent-filter>
@@ -116,6 +121,7 @@
         </receiver>
         <!-- ************保活end************ -->
 
+        <activity android:name=".acitivity.GoodsListActivity"></activity>
     </application>
 
 </manifest>

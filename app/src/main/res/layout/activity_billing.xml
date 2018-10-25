@@ -1,106 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_white"
-    tools:context=".acitivity.BillingActivity">
+    android:orientation="vertical">
 
 
-    <TextView
-        android:id="@+id/tv1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:padding="10dp"
-        android:text="请输入开票金额"
-        android:textColor="@color/tv_text_main"
-        android:textSize="16sp" />
-
-    <RelativeLayout
-        android:id="@+id/rl1"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv1">
-
-        <EditText
-            android:id="@+id/price"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:background="@drawable/common_et_bg"
-            android:inputType="number"
-            android:paddingLeft="10dp"
-            android:textColor="@color/tv_text_main" />
+        android:background="@color/app_white"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
             android:padding="10dp"
-            android:text="元"
+            android:text="商品名称"
             android:textColor="@color/tv_text_main"
             android:textSize="16sp" />
-    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tv2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rl1"
-        android:padding="10dp"
-        android:text="请输入车牌信息"
-        android:textColor="@color/tv_text_main"
-        android:textSize="16sp" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv2">
-
-
-        <EditText
-            android:id="@+id/car_no"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:letterSpacing="0.2"
-            android:maxLength="8"
-            android:background="@drawable/common_et_bg"
-            android:paddingLeft="10dp"
-            android:textColor="@color/tv_text_main" />
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv1">
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/common_et_bg"
+                android:gravity="center_vertical"
+                android:inputType="number"
+                android:paddingLeft="10dp"
+                android:textColor="@color/tv_text_main" />
 
-    <Button
-        android:id="@+id/submit"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_centerInParent="true"
-        android:layout_margin="20dp"
-        android:background="@drawable/btn_selector_main"
-        android:text="确  定"
-        android:textColor="@color/app_white"
-        android:textSize="18sp" />
 
-    <android.inputmethodservice.KeyboardView
-        android:id="@+id/keyboard_view"
-        android:layout_width="match_parent"
+        </RelativeLayout>
 
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:background="#d1d5db"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:keyBackground="@drawable/selector_key_background"
-        android:keyPreviewHeight="43dp"
-        android:keyPreviewLayout="@layout/key_preview_layout"
-        android:keyTextColor="#333333"
-        android:keyTextSize="16sp"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:shadowColor="#00000000"
-        android:shadowRadius="0.0"
-        android:visibility="gone" />
-</RelativeLayout>
+        <TextView
+            android:id="@+id/tv1"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:padding="10dp"
+            android:text="规格型号"
+            android:textColor="@color/tv_text_main"
+            android:textSize="16sp" />
+
+        <RelativeLayout
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv1">
+
+            <TextView
+                android:id="@+id/type"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/common_et_bg"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:textColor="@color/tv_text_main" />
+
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl1"
+            android:padding="10dp"
+            android:text="单价"
+            android:textColor="@color/tv_text_main"
+            android:textSize="16sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv2">
+
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/common_et_bg"
+                android:gravity="center_vertical"
+                android:letterSpacing="0.2"
+                android:maxLength="8"
+                android:paddingLeft="10dp"
+                android:textColor="@color/tv_text_main" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="数量"
+            android:textColor="@color/tv_text_main"
+            android:textSize="16sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <EditText
+                android:id="@+id/number"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/common_et_bg"
+                android:inputType="number"
+                android:letterSpacing="0.2"
+                android:maxLength="8"
+                android:hint="请输入数量"
+                android:paddingLeft="10dp"
+                android:textColor="@color/tv_text_main" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="金额"
+            android:textColor="@color/tv_text_main"
+            android:textSize="16sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <EditText
+                android:id="@+id/total"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/common_et_bg"
+                android:inputType="numberDecimal"
+                android:letterSpacing="0.2"
+                android:paddingLeft="10dp"
+                android:hint="请输入总金额"
+                android:textColor="@color/tv_text_main" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/submit"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_margin="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_selector_main"
+                android:text="加入开具商品列表"
+                android:textColor="@color/app_white"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>

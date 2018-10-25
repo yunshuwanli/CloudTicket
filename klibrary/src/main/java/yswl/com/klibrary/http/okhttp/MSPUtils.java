@@ -19,6 +19,9 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import yswl.com.klibrary.MApplication;
+import yswl.com.klibrary.util.L;
+
+import static yswl.com.klibrary.util.MResultUtil.TAG;
 
 /**
  * SharedPreferences封装类SPUtils
@@ -221,6 +224,7 @@ public class MSPUtils {
             return new String(objBase64);
         } catch (IOException e) {
             e.printStackTrace();
+            L.e(TAG,"对象保存本地出错；"+e.getMessage());
         }
         return null;
     }
