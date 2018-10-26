@@ -19,6 +19,11 @@ public class App extends MApplication {
         return true;
     }
 
+    @Override
+    public boolean isTestUrl() {
+        return false;
+    }
+
 
     private static IDAL idal;
 

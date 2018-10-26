@@ -234,7 +234,12 @@ public class BillingActivity extends MActivity implements View.OnClickListener, 
 
     private void requestSaveOrderInfo(PrinterBean printerBean) {
         if (printerBean == null || printerBean.info == null) return;
-        final String url = "http://test.datarj.com/webService/kptService";
+        String url;
+        if (App.getApplication().isTestUrl()) {
+            url = Contant.TEST_BASE_URL_KPT;
+        } else {
+            url = Contant.BASE_URL_KPT;
+        }
         OrderInfo orderInfo = printerBean.info;
         List<User.SpListBean> list = printerBean.list;
         Map<String, Object> data = new HashMap<>();

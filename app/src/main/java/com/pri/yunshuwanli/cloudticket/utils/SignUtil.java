@@ -2,6 +2,8 @@ package com.pri.yunshuwanli.cloudticket.utils;
 
 import android.util.Base64;
 
+import com.pri.yunshuwanli.cloudticket.App;
+import com.pri.yunshuwanli.cloudticket.Contant;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
 import com.pri.yunshuwanli.cloudticket.entry.PrinterBean;
 import com.pri.yunshuwanli.cloudticket.entry.User;
@@ -37,12 +39,11 @@ public class SignUtil {
         return DigestUtils.md5Hex(signSourceData);
     }
 
-    private static final String QR_CODE_URL_RORMAT = "http://fpjtest.datarj.com/einv/kptService/%s/%s";
-    private static final String QR_CODE_URL_SHORT_RORMAT = "http://fpjtest.datarj.com/e?";
+    private static final String QR_CODE_URL_RORMAT = "/einv/kptService/%s/%s";
     private static final String QR_CODE_URL_PARMAR_RORMAT = "kptService/%s/%s";
     private static final String TAG = SignUtil.class.getSimpleName();
 
-    public static String getQrCodeUrl(PrinterBean printer,boolean isNeedChange) {
+    public static String getQrCodeUrl(PrinterBean printer, boolean isNeedChange) {
         if (printer == null || printer.info == null) return "";
         OrderInfo orderInfo = printer.info;
         Map<String, Object> data = new LinkedHashMap<>();
@@ -83,19 +84,36 @@ public class SignUtil {
         String signed = new String(Base64.encode(sign_before.getBytes(), Base64.DEFAULT));
         L.d(TAG, "base64 encode：" + signed);
         String url;
-        if(isNeedChange){
+        if (isNeedChange) {
             url = String.format(QR_CODE_URL_PARMAR_RORMAT, UserManager.getUser().getGsdm(), signed);
             L.d(TAG, "二维码无域名长连接：" + url);
-        }else {
-            url = String.format(QR_CODE_URL_RORMAT, UserManager.getUser().getGsdm(), signed);
+        } else {
+            url = String.format(getLongUrl(), UserManager.getUser().getGsdm(), signed);
             L.d(TAG, "二维码长连接：" + url);
         }
 
         return url;
     }
 
-    public static String getShortUrl(String shortParams){
-        return QR_CODE_URL_SHORT_RORMAT+shortParams;
+    private static String getLongUrl() {
+        String url;
+        if (App.getApplication().isTestUrl()) {
+            url = Contant.TEST_BASE_URL_QR + QR_CODE_URL_RORMAT;
+        } else {
+            url = Contant.BASE_URL_QR + QR_CODE_URL_RORMAT;
+        }
+        return url;
+    }
+
+
+    public static String getShortUrl(String shortParams) {
+        String url;
+        if (App.getApplication().isTestUrl()) {
+            url = Contant.TEST_BASE_URL_QR + "/e?";
+        } else {
+            url = Contant.BASE_URL_QR + "/e?";
+        }
+        return url + shortParams;
     }
 }
 

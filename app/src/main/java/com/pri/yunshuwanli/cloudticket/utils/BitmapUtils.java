@@ -97,7 +97,7 @@ public class BitmapUtils {
 
         OrderInfo order = bean.info;
         if (order != null) {
-            tv_date.setText(order.getOrderDate());
+            tv_date.setText(DateUtil.getTodayDate2());
             tv_numb.setText(order.getOrderNo());
         }
         List<User.SpListBean> beans = bean.list;
@@ -108,10 +108,10 @@ public class BitmapUtils {
             }
 
         }
-        tv_amount.setText(String.valueOf(totalAmount));
+        tv_amount.setText(String.valueOf(totalAmount)+"元");
         Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(url, width*2/3, width*2/3);
         iv_Code.setImageBitmap(bitmap);
-        layoutView(view, width, height);//去到指定view大小的函数
+        layoutView(view, width, height*3/2);//去到指定view大小的函数
         return loadBitmapFromView(view);
     }
 

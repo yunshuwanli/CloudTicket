@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.pri.yunshuwanli.cloudticket.App;
+import com.pri.yunshuwanli.cloudticket.Contant;
 import com.pri.yunshuwanli.cloudticket.R;
 import com.pri.yunshuwanli.cloudticket.entry.User;
 import com.pri.yunshuwanli.cloudticket.entry.UserManager;
@@ -97,7 +99,12 @@ public class SplashActivity extends MActivity implements HttpCallback<JSONObject
         map.put("reqType", "01");
         map.put("parms", uid);
         String params = GsonUtil.GsonString(map);
-        String url = "http://test.datarj.com/webService/posService";
+        String url ;
+        if(App.getApplication().isTestUrl()){
+            url = Contant.TEST_BASE_URL_POS;
+        }else {
+            url = Contant.BASE_URL_POS;
+        }
         HttpClientProxy.getInstance().postJSONAsyn(url, 1, params, this);
 
     }

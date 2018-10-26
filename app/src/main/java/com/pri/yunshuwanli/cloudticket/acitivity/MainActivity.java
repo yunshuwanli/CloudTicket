@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.pri.yunshuwanli.cloudticket.App;
+import com.pri.yunshuwanli.cloudticket.Contant;
 import com.pri.yunshuwanli.cloudticket.R;
 import com.pri.yunshuwanli.cloudticket.adapter.RecordListAdapter;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
@@ -117,7 +119,7 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
 
 
             }
-        }, 1000 * 10*20*1000, 1000 * 60 * 60*12);
+        }, 1000 * 10 * 20 * 1000, 1000 * 60 * 60 * 12);
 //
         ServerThread serverThread = new ServerThread();
         new Thread(serverThread).start();
@@ -198,7 +200,12 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
 
     private void requestSaveOrderInfo(OrderInfo orderInfo, boolean isFailData) {
         if (orderInfo == null) return;
-        final String url = "http://test.datarj.com/webService/kptService";
+         String url;
+        if (App.getApplication().isTestUrl()) {
+            url = Contant.TEST_BASE_URL_KPT;
+        } else {
+            url = Contant.BASE_URL_KPT;
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("orderNo", orderInfo.getOrderNo());
 //        data.put("quantity", "1");//商品数量
@@ -276,9 +283,9 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
                     String errInfo = result.optString("msg");
                     //TODO 日志埋点
                     String detailInfo = o.toString();
-                    KLogger.e(TAG,"-----订单请求失败-----" +
-                            "\n------返回结果:" +result.toString()+
-                            "\n ------订单详情："+detailInfo);
+                    KLogger.e(TAG, "-----订单请求失败-----" +
+                            "\n------返回结果:" + result.toString() +
+                            "\n ------订单详情：" + detailInfo);
                     ToastUtil.showToast(errInfo);
                     //失败数据保存数据库
                     saveDataBase(o, false);
@@ -292,9 +299,9 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
                 String errInfo = result.optString("msg");
                 String detailInfo = o.toString();
                 //TODO 日志埋点
-                KLogger.e(TAG,"-----订单请求失败-----" +
-                        "\n------返回结果:" +result.toString()+
-                        "\n ------订单详情："+detailInfo);
+                KLogger.e(TAG, "-----订单请求失败-----" +
+                        "\n------返回结果:" + result.toString() +
+                        "\n ------订单详情：" + detailInfo);
             }
         }
     }
@@ -348,9 +355,9 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         ToastUtil.showToast("网络错误");
         String detailInfo = o.toString();
         //TODO 日志埋点
-        KLogger.e(TAG,"-----订单请求失败-----" +
-                "\n------返回结果:" +errorMsg+
-                "\n ------订单详情："+detailInfo);
+        KLogger.e(TAG, "-----订单请求失败-----" +
+                "\n------返回结果:" + errorMsg +
+                "\n ------订单详情：" + detailInfo);
         if (requestId == HTTP_REQUEST_ID) {
             saveDataBase(o, false);
         } else {

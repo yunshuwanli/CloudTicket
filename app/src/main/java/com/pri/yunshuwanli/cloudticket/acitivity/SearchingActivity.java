@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.pri.yunshuwanli.cloudticket.App;
 import com.pri.yunshuwanli.cloudticket.Contant;
 import com.pri.yunshuwanli.cloudticket.R;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
@@ -125,7 +126,12 @@ public class SearchingActivity extends MActivity implements HttpCallback<JSONObj
         dataWra.put("data", data);
         dataWra.put("reqType", "02");
         String jsonpar = GsonUtil.GsonString(dataWra);
-        String url = "http://test.datarj.com/webService/posService";
+        String url;
+        if (App.getApplication().isTestUrl()) {
+            url = Contant.TEST_BASE_URL_POS;
+        } else {
+            url = Contant.BASE_URL_POS;
+        }
         HttpClientProxy.getInstance().postJSONAsyn(url, 2, jsonpar, this);
     }
 

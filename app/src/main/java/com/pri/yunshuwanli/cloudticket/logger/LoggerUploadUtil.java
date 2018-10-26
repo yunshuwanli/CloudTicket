@@ -3,6 +3,7 @@ package com.pri.yunshuwanli.cloudticket.logger;
 import android.text.TextUtils;
 
 import com.pri.yunshuwanli.cloudticket.App;
+import com.pri.yunshuwanli.cloudticket.Contant;
 import com.pri.yunshuwanli.cloudticket.entry.UserManager;
 
 import org.json.JSONObject;
@@ -31,7 +32,13 @@ public class LoggerUploadUtil {
     }
 
     public static void requestLogger(boolean needUploadCurrTime) {
-        String url = "http://test.datarj.com/webService/logService/fileUpload";
+        String requestUri = "/webService/logService/fileUpload";
+        String url;
+        if (App.getApplication().isTestUrl()) {
+            url = Contant.TEST_BASE_URL+requestUri;
+        } else {
+            url = Contant.BASE_URL+requestUri;
+        }
         Map<String, Object> params = new HashMap<>();
         String zipfilePath = KLogger.getInstance().getZipFile(KLogger.getFilePath(App.getApplication()), needUploadCurrTime);
         params.put("file", new File(zipfilePath));

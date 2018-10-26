@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.pri.yunshuwanli.cloudticket.App;
+import com.pri.yunshuwanli.cloudticket.Contant;
 import com.pri.yunshuwanli.cloudticket.R;
 import com.pri.yunshuwanli.cloudticket.adapter.ShappingCarListAdapter;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
@@ -100,10 +102,9 @@ public class ShappingListActivity extends MActivity implements HttpCallback<JSON
                     PrinterBean bean = creatOrderDetail(mData);
                     String qrUrl = SignUtil.getQrCodeUrl(bean,true);
                     qrUrl = qrUrl.replace("\n","");
-                    if (!UserManager.userSimpeQR()) {
+                    if (UserManager.userSimpeQR()) {
                         gotoPrint(qrUrl, bean);
                     } else {
-                        //http://fpjtest.datarj.com/einv/kptService/hcz/ZGF0YT17Im9uIjoiaGN6MDAxMTU0MDQzNTk0MiIsIm90IjoiMjAxODEwMjUxMDUyMjIiLCJzbiI6ImhjejAwMSIsInByIjoiMi4wLDUuMCIsInNwIjoiMTAwMSxhIiwicXQiOiIxLjAsMS4wIiwidHlwZSI6IjIifSZzaT00OUUzMjM3OTRCREFDNURFMjIzNDc4Q0EzMUUzNEM3MA==
                         requestQrCodeURl(qrUrl);
                     }
                 }
@@ -127,7 +128,12 @@ public class ShappingListActivity extends MActivity implements HttpCallback<JSON
         dataWra.put("data", data);
         dataWra.put("reqType", "04");
         String jsonpar = GsonUtil.GsonString(dataWra);
-        String url = "http://test.datarj.com/webService/posService";
+        String url ;
+        if(App.getApplication().isTestUrl()){
+            url = Contant.TEST_BASE_URL_POS;
+        }else {
+            url = Contant.BASE_URL_POS;
+        }
         HttpClientProxy.getInstance().postJSONAsyn(url, 2, jsonpar, this);
     }
 

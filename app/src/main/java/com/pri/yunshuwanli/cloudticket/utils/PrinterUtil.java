@@ -46,6 +46,7 @@ public class PrinterUtil {
         Bitmap bitmap = BitmapUtils.getShappingBitmap(activity, bean,url);
         PrinterTester.getInstance().printBitmap(bitmap);
         PrinterTester.getInstance().printStr("\n \n \n \n", null);
+        PrinterTester.getInstance().printStr("\n \n ", null);
 
         final String status = PrinterTester.getInstance().start();
         KLogger.i(TAG,"-----打印完成状态------：" + status);
