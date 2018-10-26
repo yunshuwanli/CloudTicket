@@ -60,7 +60,11 @@ public class SignUtil {
                 sbPrice.append(",");
                 sbCode.append(bean.getSpdm());
                 sbCode.append(",");
-                sbCount.append(bean.getCount());
+                if(bean.getCount()==0){
+                    sbCount.append("");
+                }else {
+                    sbCount.append(bean.getCount());
+                }
                 sbCount.append(",");
             }
             String price = sbPrice.substring(0, sbPrice.length() - 1);
@@ -68,7 +72,7 @@ public class SignUtil {
             String count = sbCount.substring(0, sbCount.length() - 1);
             data.put("pr", price);//订单一项商品的总金额数组
             data.put("sp", code);//商品代码数组
-            data.put("qt", count);//商品代码数组
+            data.put("qt", count);//商品数量数组
         } else { //可视为停车场二维码
             data.put("pr", orderInfo.getTotalAmount());//订单总金额
         }

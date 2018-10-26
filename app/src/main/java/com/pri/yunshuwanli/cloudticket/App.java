@@ -21,7 +21,7 @@ public class App extends MApplication {
 
     @Override
     public boolean isTestUrl() {
-        return false;
+        return true;
     }
 
 
@@ -34,7 +34,6 @@ public class App extends MApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-
         initIDAL();
 //        Stetho.initializeWithDefaults(this);
         //bugly  日志与版本更新

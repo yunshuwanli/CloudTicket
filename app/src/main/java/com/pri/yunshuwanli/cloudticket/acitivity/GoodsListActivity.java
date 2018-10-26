@@ -41,15 +41,7 @@ public class GoodsListActivity extends MActivity {
 
         mRecyclerView = findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        ArrayList<User.SpListBean> listBeans = new ArrayList<>();
-        for (int i = 1; i < 20; i++) {
-            listBeans.add(new User.SpListBean("a", "珠宝A" + i, 0, ""));
-            listBeans.add(new User.SpListBean("B", "珠宝B" + i, 1, ""));
-        }
-        myAdapter = new GoodsListAdapter(this, listBeans, R.layout.item_list_goods);
-
-//        myAdapter = new GoodsListAdapter(this, UserManager.getUser().getSpList(), R.layout.item_list_goods);
+        myAdapter = new GoodsListAdapter(this, UserManager.getUser().getSpList(), R.layout.item_list_goods);
         myAdapter.setOnClickListener(new GoodsListAdapter.OnClickListener() {
             @Override
             public void onClick(User.SpListBean info) {
@@ -122,6 +114,9 @@ public class GoodsListActivity extends MActivity {
     /*-----------eventbus 注册end---------------*/
 
 
+    /**
+     * 清空购物车
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();

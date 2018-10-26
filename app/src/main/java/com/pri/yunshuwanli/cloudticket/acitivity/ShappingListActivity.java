@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +61,10 @@ public class ShappingListActivity extends MActivity implements HttpCallback<JSON
             @Override
             public void onCallBack(boolean result) {
                 //TODO请求网络
+                //关闭页面，清空购物车
+                UserManager.getUser().getShappingCount().clear();
+                SpItemEvent.postEvent(null);
+                ShappingListActivity.this.finish();
             }
         }).execute(map);
     }
@@ -100,12 +105,12 @@ public class ShappingListActivity extends MActivity implements HttpCallback<JSON
 
                 if (mData != null && mData.size() > 0) {
                     PrinterBean bean = creatOrderDetail(mData);
-                    String qrUrl = SignUtil.getQrCodeUrl(bean,true);
+                    String qrUrl = SignUtil.getQrCodeUrl(bean,UserManager.userSimpeQR());
                     qrUrl = qrUrl.replace("\n","");
                     if (UserManager.userSimpeQR()) {
-                        gotoPrint(qrUrl, bean);
-                    } else {
                         requestQrCodeURl(qrUrl);
+                    } else {
+                        gotoPrint(qrUrl, bean);
                     }
                 }
 
@@ -146,14 +151,14 @@ public class ShappingListActivity extends MActivity implements HttpCallback<JSON
     }
 
 
-    double getTotalPrice() {
+    String getTotalPrice() {
         double total = 0;
         if (mData != null) {
             for (User.SpListBean bean : mData) {
                 total += bean.getReal_total();
             }
         }
-        return total;
+        return String.valueOf(new BigDecimal(total).setScale(2,BigDecimal.ROUND_HALF_UP));
 
 
     }

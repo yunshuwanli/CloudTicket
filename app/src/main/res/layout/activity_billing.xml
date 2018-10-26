@@ -116,10 +116,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:background="@drawable/common_et_bg"
-                android:inputType="number"
+                android:inputType="numberDecimal"
                 android:letterSpacing="0.2"
-                android:maxLength="8"
-                android:hint="请输入数量"
                 android:paddingLeft="10dp"
                 android:textColor="@color/tv_text_main" />
 
@@ -162,7 +160,7 @@
                 android:layout_margin="20dp"
                 android:layout_weight="1"
                 android:background="@drawable/btn_selector_main"
-                android:text="加入开具商品列表"
+                android:text="加入开票商品列表"
                 android:textColor="@color/app_white"
                 android:textSize="18sp" />
 

@@ -123,13 +123,14 @@ public class BillingActivity extends MActivity implements View.OnClickListener, 
                 if (item != null) {
                     if (item.getSpdj() != 0) {
                         if (!TextUtils.isEmpty(s.toString())) {
-                            if (s.toString().startsWith("0") && s.toString().length() > 1) {
+                            if (s.toString().startsWith("0") && s.toString().length() > 1 && !s.toString().startsWith("0.")) {
                                 ToastUtil.showToast("数量输入有误");
                             } else {
                                 try {
                                     BigDecimal count = new BigDecimal(s.toString());
                                     BigDecimal price = new BigDecimal(item.getSpdj());
                                     BigDecimal total = count.multiply(price);
+                                    total = total.setScale(2,BigDecimal.ROUND_HALF_UP);
                                     et_total.setText(String.valueOf(total));
                                 } catch (Exception e) {
                                     ToastUtil.showToast("数量输入有误");
@@ -164,14 +165,20 @@ public class BillingActivity extends MActivity implements View.OnClickListener, 
                 if (item != null) {
                     if (item.getSpdj() != 0) {
                         if (!TextUtils.isEmpty(s.toString())) {
-                            if (s.toString().startsWith("0") && s.toString().length() > 1) {
-                                ToastUtil.showToast("数量输入有误");
+                            if (s.toString().startsWith("0") && s.toString().length() > 1 && !s.toString().startsWith("0.")) {
+                                ToastUtil.showToast("金额输入有误");
                             } else {
                                 try {
                                     BigDecimal total = new BigDecimal(s.toString());
                                     BigDecimal price = new BigDecimal(item.getSpdj());
-                                    BigDecimal count = total.divide(price, 1, BigDecimal.ROUND_HALF_UP);
-                                    et_number.setText(String.valueOf(count));
+                                    if(total.compareTo(BigDecimal.ZERO) != 0){
+                                        BigDecimal count = total.divide(price, 15, BigDecimal.ROUND_HALF_UP);
+                                        et_number.setText(String.valueOf(count));
+                                    }else {
+                                        BigDecimal count = total.divide(price, 15, BigDecimal.ROUND_HALF_UP);
+                                        et_number.setText(String.valueOf(count));
+                                    }
+
                                 } catch (Exception e) {
                                     ToastUtil.showToast("金额输入有误");
                                 }
@@ -180,8 +187,10 @@ public class BillingActivity extends MActivity implements View.OnClickListener, 
                         } else {
                             BigDecimal total = new BigDecimal("0");
                             BigDecimal price = new BigDecimal(item.getSpdj());
-                            BigDecimal count = total.divide(price, 1, BigDecimal.ROUND_HALF_UP);
-                            et_number.setText(String.valueOf(count));
+                            if(total.compareTo(BigDecimal.ZERO) != 0){
+                                BigDecimal count = total.divide(price, 15, BigDecimal.ROUND_HALF_UP);
+                                et_number.setText(String.valueOf(count));
+                            }
                         }
                     }
                 }
@@ -206,7 +215,7 @@ public class BillingActivity extends MActivity implements View.OnClickListener, 
             ToastUtil.showToast("总金额不能为空");
             return;
         }
-        if ((count.startsWith("0") && count.length() > 1) || (total.startsWith("0") && total.length() > 1)) {
+        if ((count.startsWith("0") && count.length() > 1 && !count.startsWith("0.")) || (total.startsWith("0") && total.length() > 1 && !total.startsWith("0."))) {
             ToastUtil.showToast("输入数量或金额有误");
             return;
         }

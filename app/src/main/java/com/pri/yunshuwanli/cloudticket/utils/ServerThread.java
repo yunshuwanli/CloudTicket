@@ -46,6 +46,9 @@ public class ServerThread implements Runnable {
         String text = null;
         while (true) {
             try {
+                if(serverSocket==null){
+                    return;
+                }
                 client = serverSocket.accept();
                 KLogger.i(TAG,"-----Server获取到客户端Socket----");
                 //把客户端放入客户端集合中

@@ -11,12 +11,8 @@
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/name"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        app:srcCompat="@mipmap/head"
-        android:gravity="center"
-        android:textColor="@color/tv_text_main"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:layout_height="120dp"
+        app:srcCompat="@mipmap/head" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,7 +29,7 @@
             android:gravity="center"
             android:text="订单日期："
             android:textColor="@color/tv_text_black"
-            android:textSize="20sp" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/order_date"
@@ -42,8 +38,7 @@
             android:gravity="center"
             android:text="15.00"
             android:textColor="@color/tv_text_black"
-            android:textSize="20sp"
-            />
+            android:textSize="22sp" />
 
 
     </LinearLayout>
@@ -63,7 +58,7 @@
             android:gravity="center"
             android:text="订单编号："
             android:textColor="@color/tv_text_black"
-            android:textSize="20sp" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/order_numb"
@@ -72,8 +67,7 @@
             android:gravity="center"
             android:text="15.00"
             android:textColor="@color/tv_text_black"
-            android:textSize="20sp"
-             />
+            android:textSize="22sp" />
 
 
     </LinearLayout>
@@ -93,7 +87,7 @@
             android:gravity="center"
             android:text="订单金额："
             android:textColor="@color/tv_text_black"
-            android:textSize="20sp" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/order_amount"
@@ -102,25 +96,29 @@
             android:gravity="center"
             android:text="15.00"
             android:textColor="@color/tv_text_black"
-            android:textSize="20sp"
-            />
+            android:textSize="22sp" />
 
 
     </LinearLayout>
-<View
-    android:layout_width="match_parent"
-    android:layout_height="10dp"
-    android:layout_margin="10dp"
-    android:background="@drawable/line_dashes"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/line_dashes" />
+
     <TextView
         android:id="@+id/hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl1"
-        android:padding="10dp"
-        android:text="使用支付宝或微信扫描下方二维码（有效期30天），根据指引步骤开具您的增值税电子普通发票"
+        android:lineSpacingExtra="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="使用支付宝或微信扫描下方二维码（有效期30天），根据指引步骤开具您的增值税电子普通发票。"
         android:textColor="@color/tv_text_black"
-        android:textSize="20sp" />
+        android:layout_marginBottom="30dp"
+        android:textSize="22sp" />
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/qr_code"
@@ -133,29 +131,44 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:text="关注微信公众号'容津信息'，及时获取发票信息使用支付宝开具电子发票可以获得蚂蚁森林5g能量"
+        android:lineSpacingExtra="10dp"
+        android:layout_marginTop="30dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="1、用支付宝「扫一扫」开票。抽取现金红包，还可以获得蚂蚁森林绿色能量。"
         android:textColor="@color/tv_text_black"
-        android:textSize="20sp"
-        />
+        android:textSize="22sp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="10dp"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="2、用微信「扫一扫」开票。关注“容津信息”公众号，获取发票整体解决方案。"
+        android:textColor="@color/tv_text_black"
+        android:textSize="22sp" />
+
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:lineSpacingExtra="5dp"
+        android:layout_marginTop="25dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:text="技术支持：上海容津信息技术有限公司"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
         android:textColor="@color/tv_text_black"
-        android:textSize="20sp"
-        />
+        android:textSize="22sp" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="咨询电话：021-3356700"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
+        android:lineSpacingExtra="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="咨询电话：021-33566700"
         android:textColor="@color/tv_text_black"
-        android:textSize="20sp"
-        />
+        android:textSize="22sp" />
 
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.pri.yunshuwanli.cloudticket.utils;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Looper;
 
 import com.pax.dal.IDAL;
@@ -9,6 +10,7 @@ import com.pax.dal.entity.EFontTypeAscii;
 import com.pax.dal.entity.EFontTypeExtCode;
 import com.pax.neptunelite.api.NeptuneLiteUser;
 import com.pri.yunshuwanli.cloudticket.App;
+import com.pri.yunshuwanli.cloudticket.R;
 import com.pri.yunshuwanli.cloudticket.acitivity.MainActivity;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
 import com.pri.yunshuwanli.cloudticket.entry.PrinterBean;
@@ -39,7 +41,7 @@ public class PrinterUtil {
         PrinterTester.getInstance().leftIndents(Short.parseShort("0"));
         PrinterTester.getInstance().setGray(Integer.parseInt("4"));
         PrinterTester.getInstance().setInvert(false);
-        PrinterTester.getInstance().step(Integer.parseInt("50"));
+        PrinterTester.getInstance().step(Integer.parseInt("20"));
     }
 
     public static boolean startShappingPrinter(Activity activity, PrinterBean bean, String url) {

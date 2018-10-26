@@ -17,7 +17,9 @@ import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
 import com.pri.yunshuwanli.cloudticket.entry.PrinterBean;
 import com.pri.yunshuwanli.cloudticket.entry.User;
 import com.pri.yunshuwanli.cloudticket.entry.UserManager;
+import com.pri.yunshuwanli.cloudticket.view.ChangeTextViewSpace;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class BitmapUtils {
@@ -95,6 +97,7 @@ public class BitmapUtils {
         TextView tv_amount = view.findViewById(R.id.order_amount);
         ImageView iv_Code = view.findViewById(R.id.qr_code);
 
+
         OrderInfo order = bean.info;
         if (order != null) {
             tv_date.setText(DateUtil.getTodayDate2());
@@ -108,10 +111,10 @@ public class BitmapUtils {
             }
 
         }
-        tv_amount.setText(String.valueOf(totalAmount)+"元");
-        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(url, width*2/3, width*2/3);
+        tv_amount.setText(String.valueOf(new BigDecimal(totalAmount).setScale(2,BigDecimal.ROUND_HALF_UP))+"元");
+        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(url, width*3/4, width*3/4);
         iv_Code.setImageBitmap(bitmap);
-        layoutView(view, width, height*3/2);//去到指定view大小的函数
+        layoutView(view, width, height*9/5);//去到指定view大小的函数
         return loadBitmapFromView(view);
     }
 

@@ -23,6 +23,7 @@ public abstract class MApplication extends BaseApplication /*implements DebugSet
     }
 
     public abstract boolean getDebugSetting();
+    public abstract boolean isTestUrl();
 
     private static MApplication app;
     public static MApplication getApplication() {
