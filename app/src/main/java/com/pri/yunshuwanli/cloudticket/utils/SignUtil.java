@@ -113,9 +113,9 @@ public class SignUtil {
     public static String getShortUrl(String shortParams) {
         String url;
         if (App.getApplication().isTestUrl()) {
-            url = Contant.TEST_BASE_URL_QR + "/e?";
+            url = Contant.TEST_BASE_URL_QR + "/e/";
         } else {
-            url = Contant.BASE_URL_QR + "/e?";
+            url = Contant.BASE_URL_QR + "/e/";
         }
         return url + shortParams;
     }

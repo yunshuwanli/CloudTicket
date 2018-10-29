@@ -3,6 +3,7 @@ package com.pri.yunshuwanli.cloudticket.logger;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
@@ -137,7 +138,7 @@ public class KLogger implements Thread.UncaughtExceptionHandler {
      * @param tag
      * @param msg
      */
-    private static void writeToFile(char type, String tag, String msg) {
+    private  static synchronized void writeToFile(char type, String tag, String msg) {
 
         if (null == logPath) {
             L.e(TAG, "logPath == null ，未初始化LogToFile");

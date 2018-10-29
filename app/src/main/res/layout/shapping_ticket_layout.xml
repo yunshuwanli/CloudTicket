@@ -107,7 +107,7 @@
         android:layout_margin="10dp"
         android:background="@drawable/line_dashes" />
 
-    <TextView
+    <com.pri.yunshuwanli.cloudticket.view.JustifyTextView
         android:id="@+id/hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -128,7 +128,7 @@
         app:srcCompat="@mipmap/ic_serch" />
 
 
-    <TextView
+    <com.pri.yunshuwanli.cloudticket.view.JustifyTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="10dp"
@@ -138,7 +138,7 @@
         android:text="1、用支付宝「扫一扫」开票。抽取现金红包，还可以获得蚂蚁森林绿色能量。"
         android:textColor="@color/tv_text_black"
         android:textSize="22sp" />
-    <TextView
+    <com.pri.yunshuwanli.cloudticket.view.JustifyTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="10dp"

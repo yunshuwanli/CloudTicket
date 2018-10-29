@@ -1,11 +1,9 @@
 package com.pri.yunshuwanli.cloudticket.utils;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +15,6 @@ import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
 import com.pri.yunshuwanli.cloudticket.entry.PrinterBean;
 import com.pri.yunshuwanli.cloudticket.entry.User;
 import com.pri.yunshuwanli.cloudticket.entry.UserManager;
-import com.pri.yunshuwanli.cloudticket.view.ChangeTextViewSpace;
 
 import java.math.BigDecimal;
 import java.util.List;
