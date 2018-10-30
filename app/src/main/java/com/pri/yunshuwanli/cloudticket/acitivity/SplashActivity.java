@@ -87,11 +87,14 @@ public class SplashActivity extends MActivity implements HttpCallback<JSONObject
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String uid = data.getStringExtra("UID");
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            requestInitUserInfo(uid);
-            saveUid(uid);
+        if(data!=null){
+            String uid = data.getStringExtra("UID");
+            if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+                requestInitUserInfo(uid);
+                saveUid(uid);
+            }
         }
+
     }
 
     private void requestInitUserInfo(String uid) {
