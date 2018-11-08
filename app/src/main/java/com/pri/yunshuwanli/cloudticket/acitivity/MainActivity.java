@@ -98,28 +98,28 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
 
     //模拟订单生成
     void initTimer() {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-
-                final OrderInfo info = new OrderInfo("20180913000000" + i,
-                        10.00, "2018-10-23 23:59:59",
-                        "沪A88888",
-                        "某某场库，停车时间201809061433-201809061533共计一小时");
-
-                AsyncTask<OrderInfo, Void, Boolean> execute = new PrinterAsyncTask(MainActivity.this, new PrinterAsyncTask.CallBack() {
-                    @Override
-                    public void onCallBack(boolean result) {
-                        if (result) {
-                            requestSaveOrderInfo(info, false);
-                        }
-                    }
-                }).execute(info);
-
-
-            }
-        }, 1000 * 10 * 20 * 1000, 1000 * 60 * 60 * 12);
+//        Timer timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//
+//                final OrderInfo info = new OrderInfo("20180913000000" + i,
+//                        10.00, "2018-10-23 23:59:59",
+//                        "沪A88888",
+//                        "某某场库，停车时间201809061433-201809061533共计一小时");
+//
+//                AsyncTask<OrderInfo, Void, Boolean> execute = new PrinterAsyncTask(MainActivity.this, new PrinterAsyncTask.CallBack() {
+//                    @Override
+//                    public void onCallBack(boolean result) {
+//                        if (result) {
+//                            requestSaveOrderInfo(info, false);
+//                        }
+//                    }
+//                }).execute(info);
+//
+//
+//            }
+//        }, 1000 * 10 * 20 * 1000, 1000 * 60 * 60 * 12);
 //
         ServerThread serverThread = new ServerThread();
         new Thread(serverThread).start();
@@ -164,29 +164,23 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
     }
 
     private void loadData() {
-        new Thread(new Runnable() {
+        ondayOrders = new OrderDao(MainActivity.this).queryOrderOfTime(10);
+        MainActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ondayOrders = new OrderDao(MainActivity.this).queryOrderOfTime(10);
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        count.setText(ondayOrders.size() + "");
-                        price.setText(getTotalAmo(ondayOrders) + "");
-                        refreshLayout.finishRefresh();
-                        adapter.setList(ondayOrders);
-                    }
-                });
-                OrderDao dao = new OrderDao(MainActivity.this);
-                List<OrderInfo> failOrders = dao.queryOrderInfoUpdataFail();
-                if (failOrders != null && failOrders.size() > 0) {
-                    for (OrderInfo fail : failOrders) {
-                        requestSaveOrderInfo(fail, true);
-                    }
-                }
+                count.setText(ondayOrders.size() + "");
+                price.setText(getTotalAmo(ondayOrders) + "");
+                refreshLayout.finishRefresh();
+                adapter.setList(ondayOrders);
             }
-        }).start();
-
+        });
+        OrderDao dao = new OrderDao(MainActivity.this);
+        List<OrderInfo> failOrders = dao.queryOrderInfoUpdataFail();
+        if (failOrders != null && failOrders.size() > 0) {
+            for (OrderInfo fail : failOrders) {
+                requestSaveOrderInfo(fail, true);
+            }
+        }
 
     }
 

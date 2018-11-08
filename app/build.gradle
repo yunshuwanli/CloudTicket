@@ -14,8 +14,8 @@ android {
         applicationId "com.pri.yunshuwanli.cloudticket"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 2
-        versionName "1.1.0"
+        versionCode 3
+        versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
@@ -29,10 +29,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.yunshuwanli
         }
-        debug{
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+
     }
 }
 
