@@ -81,6 +81,8 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         //开启进程保活
 //        startService(new Intent(getApplicationContext(), DaemonService.class));
         initView();
+        ServerThread serverThread = new ServerThread();
+        new Thread(serverThread).start();
         initTimer();
         initDataBase();
     }
@@ -121,8 +123,7 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
 //            }
 //        }, 1000 * 10 * 20 * 1000, 1000 * 60 * 60 * 12);
 //
-        ServerThread serverThread = new ServerThread();
-        new Thread(serverThread).start();
+
 
 
     }
