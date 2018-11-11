@@ -200,6 +200,10 @@ public class OrderInfo implements Parcelable {
         }
     };
 
+    /**
+     * 订单号 当前日期与getClientNo
+     * @return
+     */
     public static String getOderID(){
         return UserManager.getUser().getClientNo() + DateUtil.getNowTimeStamp();
     }

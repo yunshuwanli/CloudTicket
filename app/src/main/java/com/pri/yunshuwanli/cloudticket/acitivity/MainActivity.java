@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,6 +32,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +46,7 @@ import yswl.com.klibrary.http.CallBack.OrderHttpCallBack;
 import yswl.com.klibrary.http.HttpClientProxy;
 import yswl.com.klibrary.util.EmptyRecyclerView;
 import yswl.com.klibrary.util.GsonUtil;
+import yswl.com.klibrary.util.L;
 import yswl.com.klibrary.util.ToastUtil;
 
 public class MainActivity extends MActivity implements View.OnClickListener, OrderHttpCallBack {
@@ -74,6 +78,28 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
     private OrderDao dao;
     List<OrderInfo> ondayOrders;
 
+
+    private static Handler mHandle ;
+
+    private static class ResultHandle extends Handler{
+        WeakReference<Activity> wAcitvity;
+        public ResultHandle(Activity activity) {
+           wAcitvity  = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == 1){
+                OrderInfo info  = (OrderInfo) msg.obj;
+                if (info != null) {
+                }
+
+            }
+
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,9 +107,9 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         //开启进程保活
 //        startService(new Intent(getApplicationContext(), DaemonService.class));
         initView();
-        ServerThread serverThread = new ServerThread();
+        mHandle = new ResultHandle(this);
+        ServerThread serverThread = new ServerThread(this,mHandle);
         new Thread(serverThread).start();
-        initTimer();
         initDataBase();
     }
 
@@ -97,36 +123,6 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         return dao;
     }
 
-
-    //模拟订单生成
-    void initTimer() {
-//        Timer timer = new Timer();
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//
-//                final OrderInfo info = new OrderInfo("20180913000000" + i,
-//                        10.00, "2018-10-23 23:59:59",
-//                        "沪A88888",
-//                        "某某场库，停车时间201809061433-201809061533共计一小时");
-//
-//                AsyncTask<OrderInfo, Void, Boolean> execute = new PrinterAsyncTask(MainActivity.this, new PrinterAsyncTask.CallBack() {
-//                    @Override
-//                    public void onCallBack(boolean result) {
-//                        if (result) {
-//                            requestSaveOrderInfo(info, false);
-//                        }
-//                    }
-//                }).execute(info);
-//
-//
-//            }
-//        }, 1000 * 10 * 20 * 1000, 1000 * 60 * 60 * 12);
-//
-
-
-
-    }
 
 
     private void initView() {

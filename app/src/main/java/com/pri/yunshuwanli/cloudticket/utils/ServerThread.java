@@ -1,7 +1,13 @@
 package com.pri.yunshuwanli.cloudticket.utils;
 
+import android.app.Activity;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 
+import com.pri.yunshuwanli.cloudticket.App;
+import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
+import com.pri.yunshuwanli.cloudticket.entry.PrinterAsyncTask;
 import com.pri.yunshuwanli.cloudticket.logger.KLogger;
 
 import java.io.BufferedReader;
@@ -26,11 +32,15 @@ public class ServerThread implements Runnable {
     private static final int PORT = 9999;
     private static final String TAG = "ServerThread";
     ServerSocket serverSocket;
+    Handler handler;
+    Activity activity;
     private BufferedReader in;
     private boolean printerOk = true;
 
-    public ServerThread() {
+    public ServerThread(Activity activity, Handler handler) {
         try {
+            this.activity = activity;
+            this.handler = handler;
             serverSocket = new ServerSocket(PORT);
             KLogger.i(TAG, "-----ServerSocket启动----");
         } catch (IOException e1) {
@@ -64,31 +74,53 @@ public class ServerThread implements Runnable {
                     L.i(TAG, "-----获取到数据为----" + text);
 
                     if (!TextUtils.isEmpty(text) && text.startsWith("AAA5") && text.endsWith("CD")) {
-                        String nuicode = ByteUtils.hexStringToString("BEA94131323334352020");
-                        L.i(TAG, "-----1----" + nuicode);
-                        String original = ByteUtils.unicode2String(nuicode);
-                        L.i(TAG, "-----2----" + original);
+                        OrderInfo info = String2HexUtils.getOrderInroForOrg(text);
+                        String start = text.substring(0, 28);
+                        String end = text.substring(text.length()-6);
+                        if (info == null) return;
 
-                        //TODO 打印
-                    } else {
-                        callBcak = "01";
+
+                        //打印
+//                        PrinterUtil.initPrinter(App.getIdal());
+//                       boolean printResult =  PrinterUtil.startCarPrinter(activity, info);
+                       if(true){
+                           //通知handle 请求服务
+                           Message message = Message.obtain();
+                           message.obj = info;
+                           message.what = 1;
+                           handler.sendMessage(message);
+                           //回执
+
+                           callBcak = "0200";
+                           callBcak = start +String2HexUtils.hex(callBcak)+end;
+                           os.write(callBcak.getBytes());
+                           L.i(TAG, "-----回执成功----返回码" + callBcak);
+                           try {
+                               Thread.sleep(3000);
+                               callBcak = "0200";
+                               start = "AAA5280000000100020000000323";
+                               end = String2HexUtils.getCRC(callBcak.getBytes())+"CD";
+                               callBcak = start +callBcak+end;
+                               os.write(callBcak.getBytes());
+                               L.i(TAG, "-----回执成功----返回码" + callBcak);
+                           } catch (InterruptedException e) {
+                               e.printStackTrace();
+                           }
+
+
+                       }else {
+                           callBcak = "021";
+                        os.write(callBcak.getBytes());
+                        L.i(TAG, "-----回执fail----返回码" + callBcak);
+
                     }
 
-                    //AAA5280000000100020000000382120A1F130631120A1F1406310064000A005A00BEA94131323334352020202000000E10000003E800B2A2CD
-                    //打印成功与否的值
-                    if (printerOk) {
-                        //TODO
-                        callBcak = "0200";
-                        os.write(callBcak.getBytes("utf-8"));
-                        L.i(TAG, "-----回执成功----返回码" + callBcak);
-
                     } else {
-                        //TODO 返回失败；
-                        os.write(callBcak.getBytes("utf-8"));
-                        L.i(TAG, "-----回执成功----返回码" + callBcak);
-
-
+                        callBcak = "021";
+                        os.write(callBcak.getBytes());
                     }
+
+
                 }
 
 
