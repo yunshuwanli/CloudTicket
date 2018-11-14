@@ -31,6 +31,7 @@ public class CrcUtil {
         byte[]  tes = hexStringToBytes(z_start+content);
         System.out.println("2验证byte:" +new String(tes,"utf-8"));
         byte[] crcData2 = CrcUtil.setParamCRC(tes);
+        System.out.println("crc:" +new String(crcData2));
         for(int i = 0;i<tes.length;i++){
             if(CrcUtil.isPassCRC(crcData2, i)){
                 System.out.println(i+"验证通过");
@@ -53,7 +54,7 @@ public class CrcUtil {
 //        String zhen = z_start + content + z_end;
     }
 
-    public static byte[] hexStringToBytes(String hexString) {
+    public static byte[] hexStringToBytes2(String hexString) {
         if (hexString == null || hexString.equals("")) {
             return null;
         }
@@ -185,5 +186,42 @@ public class CrcUtil {
             offset += array.length;
         }
         return result;
+    }
+
+
+    /**
+     * C#中方法转java方法
+     * 16进制转16进制的字符
+     * @param bytes
+     * @return
+     */
+    private static final String HEXES = "0123456789ABCDEF";
+    public static String bytesToHexString(byte[] bytes)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++)
+        {
+//            stringBuilder.append(bytes[i].ToString("X2"));
+            stringBuilder.append(HEXES.charAt((bytes[i] & 0xF0) >> 4)).append(HEXES.charAt((bytes[i] & 0x0F)));
+        }
+        return stringBuilder.toString();
+    }
+
+
+    /**
+     * C#中方法转java方法
+     * 16进制转16进制的字符
+     * @param hexString
+     * @return
+     */
+    public static byte[] hexStringToBytes(String hexString)
+    {
+        byte[] array = new byte[hexString.length() / 2];
+        for (int i = 0; i < array.length; i++)
+        {
+            array[i] = (byte) (0xff & Integer.parseInt(hexString.substring(i * 2, i * 2+2), 16));
+
+        }
+        return array;
     }
 }
