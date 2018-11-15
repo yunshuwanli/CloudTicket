@@ -17,6 +17,15 @@ public class CrcUtil {
     public void test() throws UnsupportedEncodingException {
          byte[] data = {(byte)0xAA,0x0C,0x01,0x00,0x01,0x00,0x00,0x04,0x05,0x17,0x05,0x01,(byte)0xA0,(byte)0x86,0x01,0x00};
 
+        String hexSt =  bytesToHexString(data);//AA0C01000100000405170501A0860100
+        System.out.println("hex" +hexSt);
+
+        byte[] bb = hexStringToBytes(hexSt);
+
+        byte[] bt = hexStringToBytes2(hexSt);
+
+       String jyza =  getCrc(bb,bb.length);
+        System.out.println("--- "+jyza);
         byte[] crcData3 = CrcUtil.setParamCRC(data);
         if(CrcUtil.isPassCRC(crcData3, 2)){
             System.out.println("3验证通过");
@@ -28,11 +37,12 @@ public class CrcUtil {
         String content = "120B09151A16120B0A001D160020015800DE00BEA94131323334352020202000002AE40023CA8003";
         String jyz = "4440";
         //十六进制转byte
-        byte[]  tes = hexStringToBytes(z_start+content);
-        System.out.println("2验证byte:" +new String(tes,"utf-8"));
-        byte[] crcData2 = CrcUtil.setParamCRC(tes);
+        byte[]  aa = hexStringToBytes(z_start+content);
+        String tes = getCrc(aa,aa.length);
+        System.out.println("验证:" +tes);
+        byte[] crcData2 = CrcUtil.setParamCRC(tes.getBytes());
         System.out.println("crc:" +new String(crcData2));
-        for(int i = 0;i<tes.length;i++){
+        for(int i = 0;i<crcData2.length;i++){
             if(CrcUtil.isPassCRC(crcData2, i)){
                 System.out.println(i+"验证通过");
             }else{
@@ -119,6 +129,22 @@ public class CrcUtil {
         String strCrc = Integer.toHexString(crc).toUpperCase(); 
         System.out.println(strCrc);
         return crc;
+    }
+    public static String getCrc(byte[] bytes, int length) {
+        int crc = 0xffff; // initial value
+        int polynomial = 0x1021; // poly value
+        for (int index = 0; index < bytes.length; index++) {
+            byte b = bytes[index];
+            for (int i = 0; i < 8; i++) {
+                boolean bit = ((b >> (7 - i) & 1) == 1);
+                boolean c15 = ((crc >> 15 & 1) == 1);
+                crc <<= 1;
+                if (c15 ^ bit)
+                    crc ^= polynomial;
+            }
+        }
+        crc &= 0xffff;
+        return Integer.toHexString(crc).toUpperCase();
     }
  
     /***
