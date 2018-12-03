@@ -2,6 +2,7 @@ package com.pri.yunshuwanli.cloudticket.utils;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.text.TextUtils;
 
@@ -9,6 +10,9 @@ import com.pri.yunshuwanli.cloudticket.App;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
 import com.pri.yunshuwanli.cloudticket.entry.PrinterAsyncTask;
 import com.pri.yunshuwanli.cloudticket.logger.KLogger;
+import com.pri.yunshuwanli.cloudticket.utils.crc.CRCDataUtils;
+import com.pri.yunshuwanli.cloudticket.utils.crc.Order;
+import com.pri.yunshuwanli.cloudticket.utils.crc.YwxException;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -34,6 +38,8 @@ public class ServerThread implements Runnable {
     ServerSocket serverSocket;
     Handler handler;
     Activity activity;
+    HandlerThread mTherd;
+    Handler mHandler;
     private BufferedReader in;
     private boolean printerOk = true;
 
@@ -42,6 +48,8 @@ public class ServerThread implements Runnable {
             this.activity = activity;
             this.handler = handler;
             serverSocket = new ServerSocket(PORT);
+             mTherd = new HandlerThread("Sockethead");
+            mHandler = new Handler(mTherd.getLooper());
             KLogger.i(TAG, "-----ServerSocket启动----");
         } catch (IOException e1) {
             KLogger.e(TAG, "-----ServerSocket启动失败---- msg:" + e1.getMessage());
@@ -54,7 +62,6 @@ public class ServerThread implements Runnable {
 
         Socket client = null;
         String text = null;
-        String callBcak = "02";
         while (true) {
             try {
                 if (serverSocket == null) {
@@ -74,16 +81,26 @@ public class ServerThread implements Runnable {
                     L.i(TAG, "-----获取到数据为----" + text);
 
                     if (!TextUtils.isEmpty(text) && text.startsWith("AAA5") && text.endsWith("CD")) {
-                        OrderInfo info = String2HexUtils.getOrderInroForOrg(text);
-                        String start = text.substring(0, 28);
-                        String end = text.substring(text.length()-6);
-                        if (info == null) return;
+                        Order order = null;
+                        try {
+                            order = CRCDataUtils.decode(text);
+                        } catch (YwxException e) {
+                            e.printStackTrace();
+                        }
 
+                        if (order == null) return;
 
-                        //打印
-//                        PrinterUtil.initPrinter(App.getIdal());
-//                       boolean printResult =  PrinterUtil.startCarPrinter(activity, info);
-                       if(true){
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                            }
+                        });
+//                        打印
+                        PrinterUtil.initPrinter(App.getIdal());
+                       OrderInfo info = OrderInfo.getOrderInfo(order);
+                       boolean printResult =  PrinterUtil.startCarPrinter(activity,OrderInfo.getOrderInfo(order) );
+                       if(printResult){
                            //通知handle 请求服务
                            Message message = Message.obtain();
                            message.obj = info;
@@ -91,33 +108,31 @@ public class ServerThread implements Runnable {
                            handler.sendMessage(message);
                            //回执
 
-                           callBcak = "0200";
-                           callBcak = start +String2HexUtils.hex(callBcak)+end;
-                           os.write(callBcak.getBytes());
-                           L.i(TAG, "-----回执成功----返回码" + callBcak);
+
+                           String result = null;
                            try {
-                               Thread.sleep(3000);
-                               callBcak = "0200";
-                               start = "AAA5280000000100020000000323";
-                               end = String2HexUtils.getCRC(callBcak.getBytes())+"CD";
-                               callBcak = start +callBcak+end;
-                               os.write(callBcak.getBytes());
-                               L.i(TAG, "-----回执成功----返回码" + callBcak);
-                           } catch (InterruptedException e) {
+                               result = CRCDataUtils.encodeResult(order,0);
+                           } catch (YwxException e) {
                                e.printStackTrace();
                            }
+                           os.write(result.getBytes());
+
+
+                               L.i(TAG, "-----回执----" + result);
+
+
 
 
                        }else {
-                           callBcak = "021";
-                        os.write(callBcak.getBytes());
-                        L.i(TAG, "-----回执fail----返回码" + callBcak);
+//                           vaule = "021";
+//                        os.write(vaule.getBytes());
+//                        L.i(TAG, "-----回执fail----返回码" + vaule);
 
                     }
 
                     } else {
-                        callBcak = "021";
-                        os.write(callBcak.getBytes());
+//                        vaule = "021";
+//                        os.write(vaule.getBytes());
                     }
 
 

@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
+import com.pri.yunshuwanli.cloudticket.utils.crc.Order;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -206,5 +207,16 @@ public class OrderInfo implements Parcelable {
      */
     public static String getOderID(){
         return UserManager.getUser().getClientNo() + DateUtil.getNowTimeStamp();
+    }
+
+    public static OrderInfo getOrderInfo(Order order){
+        OrderInfo info = new OrderInfo();
+        info.setCarNo(order.getPlateNumber());
+//        info.setPayType(order.getPayType());
+        info.setTotalAmount(order.getPayAmount());
+        info.setOrderDate(DateUtil.getTodayDate());
+        info.setOrderNo(OrderInfo.getOderID());
+//        info.setRemark();
+        return info;
     }
 }
