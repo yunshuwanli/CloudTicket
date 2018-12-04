@@ -35,33 +35,14 @@ public class CrcUtil {
 
         String z_start = "AAA5280000000100020000000382";
         String content = "120B09151A16120B0A001D160020015800DE00BEA94131323334352020202000002AE40023CA8003";
-        String jyz = "4440";
+        String jyz = "2020CD";
+//        String jyz = "4440CD";
         //十六进制转byte
-        byte[]  aa = hexStringToBytes(z_start+content);
-        String tes = getCrc(aa,aa.length);
+        byte[]  aa = hexStringToBytes(z_start+content+jyz);
+        int tes = calcCRC(aa,0,aa.length-3);
         System.out.println("验证:" +tes);
-        byte[] crcData2 = CrcUtil.setParamCRC(tes.getBytes());
-        System.out.println("crc:" +new String(crcData2));
-        for(int i = 0;i<crcData2.length;i++){
-            if(CrcUtil.isPassCRC(crcData2, i)){
-                System.out.println(i+"验证通过");
-            }else{
-                System.out.println(i+"验证失败");
-            }
-        }
 
-        byte[] crcData = CrcUtil.setParamCRC((z_start+content).getBytes());
-        System.out.println("验证byte:" +(z_start+content));
-        if(CrcUtil.isPassCRC(crcData, 3)){
-            System.out.println("验证通过");
-        }else{
-            System.out.println("验证失败");
-        }
 
-//        String z_end = CRC16M.getBufHexStr(sbuf);
-//        System.out.println("校验字："+new String(sbuf));
-//        System.out.println("校验字2："+z_end);
-//        String zhen = z_start + content + z_end;
     }
 
     public static byte[] hexStringToBytes2(String hexString) {
@@ -171,8 +152,9 @@ public class CrcUtil {
  
     /**
      * 对buf中offset以前crcLen长度的字节作crc校验，返回校验结果
-     * @param  buf
-     * @param crcLen
+     * @param  buf arr
+     * @param  offset 0
+     * @param crcLen  arr.length-3
      */
     private static int calcCRC(byte[] buf, int offset, int crcLen) {
         int start = offset;
