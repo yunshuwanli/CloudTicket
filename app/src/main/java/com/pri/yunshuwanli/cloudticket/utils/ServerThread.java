@@ -38,8 +38,6 @@ public class ServerThread implements Runnable {
     ServerSocket serverSocket;
     Handler handler;
     Activity activity;
-    HandlerThread mTherd;
-    Handler mHandler;
     private BufferedReader in;
     private boolean printerOk = true;
 
@@ -48,8 +46,6 @@ public class ServerThread implements Runnable {
             this.activity = activity;
             this.handler = handler;
             serverSocket = new ServerSocket(PORT);
-            mTherd = new HandlerThread("Sockethead");
-            mHandler = new Handler(mTherd.getLooper());
             KLogger.i(TAG, "-----ServerSocket启动----");
         } catch (IOException e1) {
             KLogger.e(TAG, "-----ServerSocket启动失败---- msg:" + e1.getMessage());
@@ -74,7 +70,7 @@ public class ServerThread implements Runnable {
 
                 InputStream is = client.getInputStream();
                 OutputStream os = client.getOutputStream();
-// 接下来考虑输入流的读取显示到PC端和返回是否收到
+                // 接下来考虑输入流的读取显示到PC端和返回是否收到
                 byte[] buffer = new byte[512];
                 int len;
                 while ((len = is.read(buffer)) != -1) {
@@ -91,12 +87,6 @@ public class ServerThread implements Runnable {
 
                         if (order == null) return;
 
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-
-                            }
-                        });
                         // 打印
                         PrinterUtil.initPrinter(App.getIdal());
                         OrderInfo info = OrderInfo.getOrderInfo(order);

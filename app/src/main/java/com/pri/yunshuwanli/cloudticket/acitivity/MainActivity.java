@@ -79,22 +79,23 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
     List<OrderInfo> ondayOrders;
 
 
-    private static Handler mHandle ;
+    private static Handler mHandle;
 
-    private static class ResultHandle extends Handler{
-        WeakReference<Activity> wAcitvity;
-        public ResultHandle(Activity activity) {
-           wAcitvity  = new WeakReference<>(activity);
+    private static class ResultHandle extends Handler {
+        WeakReference<MainActivity> wAcitvity;
+
+        public ResultHandle(MainActivity activity) {
+            wAcitvity = new WeakReference<>(activity);
         }
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if(msg.what == 1){
-                OrderInfo info  = (OrderInfo) msg.obj;
+            if (msg.what == 1) {
+                OrderInfo info = (OrderInfo) msg.obj;
                 if (info != null) {
+                    wAcitvity.get().requestSaveOrderInfo(info, false);
                 }
-
             }
 
         }
@@ -108,7 +109,7 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
 //        startService(new Intent(getApplicationContext(), DaemonService.class));
         initView();
         mHandle = new ResultHandle(this);
-        ServerThread serverThread = new ServerThread(this,mHandle);
+        ServerThread serverThread = new ServerThread(this, mHandle);
         new Thread(serverThread).start();
         initDataBase();
     }
@@ -122,7 +123,6 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
             dao = new OrderDao(this);
         return dao;
     }
-
 
 
     private void initView() {
@@ -189,9 +189,9 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         return total;
     }
 
-    private void requestSaveOrderInfo(OrderInfo orderInfo, boolean isFailData) {
+    public void requestSaveOrderInfo(OrderInfo orderInfo, boolean isFailData) {
         if (orderInfo == null) return;
-         String url;
+        String url;
         if (App.getApplication().isTestUrl()) {
             url = Contant.TEST_BASE_URL_KPT;
         } else {
