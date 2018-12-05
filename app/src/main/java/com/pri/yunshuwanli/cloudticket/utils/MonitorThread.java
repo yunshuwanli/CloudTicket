@@ -79,7 +79,12 @@ public class MonitorThread extends Thread {
 
                     }
                 }
-
+                try{
+                    //10秒后重新连接
+                    Thread.sleep(1000);
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
+                }
 
             } catch (IOException e) {
                 //连接客户端socket失败

@@ -6,16 +6,17 @@ import android.os.AsyncTask;
 import com.pri.yunshuwanli.cloudticket.App;
 import com.pri.yunshuwanli.cloudticket.utils.PrinterUtil;
 
-public class PrinterAsyncTask extends AsyncTask<OrderInfo,Void,Boolean> {
+public class PrinterAsyncTask extends AsyncTask<OrderInfo, Void, Integer> {
 
-    public interface CallBack{
-        void onCallBack(boolean result);
+    public interface CallBack {
+        void onCallBack(int result);
     }
 
     Activity activity;
     CallBack callBack;
-    public PrinterAsyncTask(Activity activity,CallBack callBack) {
-        this.activity  = activity;
+
+    public PrinterAsyncTask(Activity activity, CallBack callBack) {
+        this.activity = activity;
         this.callBack = callBack;
     }
 
@@ -26,16 +27,16 @@ public class PrinterAsyncTask extends AsyncTask<OrderInfo,Void,Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(OrderInfo... infos) {
+    protected Integer doInBackground(OrderInfo... infos) {
         PrinterUtil.initPrinter(App.getIdal());
-        boolean b = PrinterUtil.startCarPrinter(activity,infos[0]);
+        int b = PrinterUtil.startCarPrinter(activity, infos[0]);
         return b;
     }
 
 
     @Override
-    protected void onPostExecute(Boolean res) {
-        if(callBack!=null)
+    protected void onPostExecute(Integer res) {
+        if (callBack != null)
             callBack.onCallBack(res);
     }
 }

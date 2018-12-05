@@ -48,7 +48,7 @@ public class ServerThread implements Runnable {
             this.activity = activity;
             this.handler = handler;
             serverSocket = new ServerSocket(PORT);
-             mTherd = new HandlerThread("Sockethead");
+            mTherd = new HandlerThread("Sockethead");
             mHandler = new Handler(mTherd.getLooper());
             KLogger.i(TAG, "-----ServerSocket启动----");
         } catch (IOException e1) {
@@ -62,6 +62,7 @@ public class ServerThread implements Runnable {
 
         Socket client = null;
         String text = null;
+        String result = null;
         while (true) {
             try {
                 if (serverSocket == null) {
@@ -96,43 +97,24 @@ public class ServerThread implements Runnable {
 
                             }
                         });
-//                        打印
+                        // 打印
                         PrinterUtil.initPrinter(App.getIdal());
-                       OrderInfo info = OrderInfo.getOrderInfo(order);
-                       boolean printResult =  PrinterUtil.startCarPrinter(activity,OrderInfo.getOrderInfo(order) );
-                       if(printResult){
-                           //通知handle 请求服务
-                           Message message = Message.obtain();
-                           message.obj = info;
-                           message.what = 1;
-                           handler.sendMessage(message);
-                           //回执
-
-
-                           String result = null;
-                           try {
-                               result = CRCDataUtils.encodeResult(order,0);
-                           } catch (YwxException e) {
-                               e.printStackTrace();
-                           }
-                           os.write(result.getBytes());
-
-
-                               L.i(TAG, "-----回执----" + result);
-
-
-
-
-                       }else {
-//                           vaule = "021";
-//                        os.write(vaule.getBytes());
-//                        L.i(TAG, "-----回执fail----返回码" + vaule);
-
-                    }
+                        OrderInfo info = OrderInfo.getOrderInfo(order);
+                        int errorCode = PrinterUtil.startCarPrinter(activity, OrderInfo.getOrderInfo(order));
+                        if (errorCode == 0) {
+                            //通知handle 请求服务
+                            Message message = Message.obtain();
+                            message.obj = info;
+                            message.what = 1;
+                            handler.sendMessage(message);
+                        }
+                        //回执
+                        result = CRCDataUtils.encodeResult(order, errorCode);
+                        os.write(result.getBytes());
+                        L.i(TAG, "-----回执----" + result);
 
                     } else {
-//                        vaule = "021";
-//                        os.write(vaule.getBytes());
+                        os.write("error".getBytes());
                     }
 
 
@@ -142,6 +124,9 @@ public class ServerThread implements Runnable {
             } catch (IOException e) {
                 //连接客户端socket失败
                 KLogger.e(TAG, "-----连接客户端socket失败---- msg:" + e.getMessage());
+            } catch (YwxException e) {
+                e.printStackTrace();
+                KLogger.e(TAG, "-----数据帧解析失败---- msg:" + e.getMessage());
             }
         }
 

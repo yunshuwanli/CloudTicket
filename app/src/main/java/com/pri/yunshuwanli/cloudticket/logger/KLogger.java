@@ -40,8 +40,8 @@ public class KLogger implements Thread.UncaughtExceptionHandler {
 
     private static String TAG = "LogToFile";
 
-    private static String logPath = null;//log日志存放路径
-    private static String logZPath = null;//log压缩日志存放路径
+    private static String logPath ;//log日志存放路径
+    private static String logZPath ;//log压缩日志存放路径
 
     private static SimpleDateFormat dateFormat_date = new SimpleDateFormat("yyyy-MM-dd");//日期格式;
     private static SimpleDateFormat dateFormat_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//日期格式;

@@ -157,10 +157,9 @@ public class CRCDataUtils {
         resList.add((short) 130);
 
 
-        resList.add((short)0);    //回应类型固定 0
         resList.add((short)2);    //回应类型固定 2
-        resList.add((short)errCode);    //错误代码0,1
-        resList.addAll(ShortHelper.skipNShort(1));
+        resList.add((short)errCode);//错误代码0,1
+        resList.addAll(ShortHelper.skipNShort(2));
         resList.add((short)205);
         int length = resList.size() - 17;
         resList.set(2, (short)length);

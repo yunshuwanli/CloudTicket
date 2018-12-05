@@ -33,7 +33,7 @@ public class PrinterTester {
             L.i("init");
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("init:"+e.toString());
+            L.e("init:" + e.toString());
         }
     }
 
@@ -44,7 +44,7 @@ public class PrinterTester {
             return statusCode2Str(status);
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("getStatus:"+e.toString());
+            L.e("getStatus:" + e.toString());
             return "";
         }
 
@@ -56,7 +56,7 @@ public class PrinterTester {
             L.i("fontSet");
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("fontSet:"+e.toString());
+            L.e("fontSet:" + e.toString());
         }
 
     }
@@ -67,7 +67,7 @@ public class PrinterTester {
             L.i("spaceSet");
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("spaceSet:"+e.toString());
+            L.e("spaceSet:" + e.toString());
         }
     }
 
@@ -77,7 +77,7 @@ public class PrinterTester {
             L.i("printStr");
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("printStr:"+e.toString());
+            L.e("printStr:" + e.toString());
         }
 
     }
@@ -88,7 +88,7 @@ public class PrinterTester {
             L.i("setStep");
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("setStep:"+e.toString());
+            L.e("setStep:" + e.toString());
         }
     }
 
@@ -98,7 +98,7 @@ public class PrinterTester {
             L.i("printBitmap");
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("printBitmap:"+e.toString());
+            L.e("printBitmap:" + e.toString());
         }
     }
 
@@ -109,8 +109,21 @@ public class PrinterTester {
             return statusCode2Str(res);
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("start:"+e.toString());
+            L.e("start:" + e.toString());
             return "";
+        }
+
+    }
+
+    public int start2() {
+        try {
+            int res = printer.start();
+            L.i("start");
+            return res;
+        } catch (PrinterDevException e) {
+            e.printStackTrace();
+            L.e("start:" + e.toString());
+            return -1;
         }
 
     }
@@ -121,7 +134,7 @@ public class PrinterTester {
             L.i("leftIndent");
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("leftIndent:"+e.toString());
+            L.e("leftIndent:" + e.toString());
         }
     }
 
@@ -132,7 +145,7 @@ public class PrinterTester {
             return dotLine;
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("getDotLine:"+e.toString());
+            L.e("getDotLine:" + e.toString());
 
             return -2;
         }
@@ -144,7 +157,7 @@ public class PrinterTester {
             L.i("setGray");
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("setGray:"+ e.toString());
+            L.e("setGray:" + e.toString());
         }
 
     }
@@ -155,7 +168,7 @@ public class PrinterTester {
             L.i("doubleWidth");
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("doubleWidth:"+ e.toString());
+            L.e("doubleWidth:" + e.toString());
         }
     }
 
@@ -165,7 +178,7 @@ public class PrinterTester {
             L.i("doubleHeight");
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("doubleHeight:"+ e.toString());
+            L.e("doubleHeight:" + e.toString());
         }
 
     }
@@ -176,7 +189,7 @@ public class PrinterTester {
             L.i("setInvert");
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("setInvert:"+ e.toString());
+            L.e("setInvert:" + e.toString());
         }
 
     }
@@ -188,7 +201,7 @@ public class PrinterTester {
             return "cut paper successful";
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("cutPaper:"+e.toString());
+            L.e("cutPaper:" + e.toString());
             return e.toString();
         }
     }
@@ -217,9 +230,42 @@ public class PrinterTester {
             return resultStr;
         } catch (PrinterDevException e) {
             e.printStackTrace();
-            L.e("getCutMode:"+ e.toString());
+            L.e("getCutMode:" + e.toString());
             return e.toString();
         }
+    }
+
+    /**
+     * 0	没有错误
+     * 1	数据帧校验错误
+     * 2	Socket通信有误
+     * 3	开票设备未到启用日期
+     * 4	无纸发票或纸质发票已用完，请放入纸质发票
+     * 5	无电子发票或电子发票已用完，请购买电子发票
+     * 6	超过开票截止日期，请先报税，报税成功后方可继续开票
+     * 7	RTC失效，请重新校准时钟
+     * 8	超过发票金额限额
+     * 9	超过验签失败张数
+     * 10	超出离线开票控制范围，请上传发票
+     * 11	存储媒体已满，且发票明细数据不能自动滚存
+     * 12	数据解析有误或数据参数有误
+     *
+     * @param status
+     * @return
+     */
+    public int statusChange(int status) {
+        int errorcode = 1;
+        switch (status) {
+            case 0:
+                errorcode = 0;
+                break;
+            case 2:
+                errorcode = 4;
+            default:
+                errorcode = 1;
+                break;
+        }
+        return errorcode;
     }
 
     public String statusCode2Str(int status) {

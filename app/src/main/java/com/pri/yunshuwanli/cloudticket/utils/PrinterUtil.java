@@ -27,12 +27,12 @@ public class PrinterUtil {
     private static final String TAG = PrinterUtil.class.getSimpleName();
 
     public static void initPrinter(IDAL idal) {
-        if(idal==null){
+        if (idal == null) {
             try {
                 idal = NeptuneLiteUser.getInstance().getDal(App.getApplication().getApplicationContext());
             } catch (Exception e) {
                 e.printStackTrace();
-                KLogger.e(TAG,"----- 初始化打印失败 ："+e.getMessage());
+                KLogger.e(TAG, "----- 初始化打印失败 ：" + e.getMessage());
             }
         }
         PrinterTester.getInstance().init(idal);
@@ -45,13 +45,13 @@ public class PrinterUtil {
     }
 
     public static boolean startShappingPrinter(Activity activity, PrinterBean bean, String url) {
-        Bitmap bitmap = BitmapUtils.getShappingBitmap(activity, bean,url);
+        Bitmap bitmap = BitmapUtils.getShappingBitmap(activity, bean, url);
         PrinterTester.getInstance().printBitmap(bitmap);
         PrinterTester.getInstance().printStr("\n \n \n \n", null);
         PrinterTester.getInstance().printStr("\n \n ", null);
 
         final String status = PrinterTester.getInstance().start();
-        KLogger.i(TAG,"-----打印完成状态------：" + status);
+        KLogger.i(TAG, "-----打印完成状态------：" + status);
         if (status.equals("打印成功")) {
             return true;
         }
@@ -64,23 +64,22 @@ public class PrinterUtil {
         return false;
     }
 
-    public static boolean startCarPrinter(Activity activity, OrderInfo info) {
+    public static int startCarPrinter(Activity activity, OrderInfo info) {
         Bitmap bitmap = BitmapUtils.getTicktBitmap(activity, info);
         PrinterTester.getInstance().printBitmap(bitmap);
         PrinterTester.getInstance().printStr("\n \n \n \n", null);
 
-        final String status = PrinterTester.getInstance().start();
-//            PrinterTester.getInstance().
-        KLogger.i(TAG,"-----打印完成状态------：" + status);
-        if (status.equals("打印成功")) {
-            return true;
+        final int status = PrinterTester.getInstance().start2();
+        KLogger.i(TAG, "-----打印完成状态------：" + status);
+        if (status == 0) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtil.showToast(status);
+                }
+            });
         }
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ToastUtil.showToast(status);
-            }
-        });
-        return false;
+
+        return status;
     }
 }
