@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import com.pri.yunshuwanli.cloudticket.App;
 import com.pri.yunshuwanli.cloudticket.entry.OrderInfo;
 import com.pri.yunshuwanli.cloudticket.entry.PrinterAsyncTask;
+import com.pri.yunshuwanli.cloudticket.entry.UserManager;
 import com.pri.yunshuwanli.cloudticket.logger.KLogger;
 import com.pri.yunshuwanli.cloudticket.utils.crc.CRCDataUtils;
 import com.pri.yunshuwanli.cloudticket.utils.crc.Order;
@@ -39,6 +40,7 @@ public class ServerThread implements Runnable {
     Handler handler;
     Activity activity;
     private BufferedReader in;
+    int mErrorCode = 0;
     private boolean printerOk = true;
 
     public ServerThread(Activity activity, Handler handler) {
@@ -59,6 +61,7 @@ public class ServerThread implements Runnable {
         Socket client = null;
         String text = null;
         String result = null;
+
         while (true) {
             try {
                 if (serverSocket == null) {
@@ -69,7 +72,7 @@ public class ServerThread implements Runnable {
                 //把客户端放入客户端集合中
 
                 InputStream is = client.getInputStream();
-                OutputStream os = client.getOutputStream();
+               final OutputStream os = client.getOutputStream();
                 // 接下来考虑输入流的读取显示到PC端和返回是否收到
                 byte[] buffer = new byte[512];
                 int len;
@@ -78,7 +81,7 @@ public class ServerThread implements Runnable {
                     L.i(TAG, "-----获取到数据为----" + text);
 
                     if (!TextUtils.isEmpty(text) && text.startsWith("AAA5") && text.endsWith("CD")) {
-                        Order order = null;
+                      Order order = null;
                         try {
                             order = CRCDataUtils.decode(text);
                         } catch (YwxException e) {
@@ -87,19 +90,30 @@ public class ServerThread implements Runnable {
 
                         if (order == null) return;
 
-                        // 打印
-                        PrinterUtil.initPrinter(App.getIdal());
-                        OrderInfo info = OrderInfo.getOrderInfo(order);
-                        int errorCode = PrinterUtil.startCarPrinter(activity, OrderInfo.getOrderInfo(order));
-                        if (errorCode == 0) {
-                            //通知handle 请求服务
-                            Message message = Message.obtain();
-                            message.obj = info;
-                            message.what = 1;
-                            handler.sendMessage(message);
+                        if(UserManager.userSimpeQR()){
+
                         }
-                        //回执
-                        result = CRCDataUtils.encodeResult(order, errorCode);
+
+                        // 打印
+                       final OrderInfo info = OrderInfo.getOrderInfo(order);
+//                        PrinterUtil.initPrinter(App.getIdal());
+//                        int errorCode = PrinterUtil.startCarPrinter(activity, info);
+                       new PrinterAsyncTask(activity, new PrinterAsyncTask.CallBack() {
+                           @Override
+                           public void onCallBack(int errorCode) {
+                               mErrorCode = errorCode;
+                               if (errorCode == 0) {
+                                   //通知handle 请求服务
+                                   Message message = Message.obtain();
+                                   message.obj = info;
+                                   message.what = 1;
+                                   handler.sendMessage(message);
+                               }
+                               //回执
+
+                           }
+                       }).execute(info);
+                         result = CRCDataUtils.encodeResult(order, mErrorCode);
                         os.write(result.getBytes());
                         L.i(TAG, "-----回执----" + result);
 

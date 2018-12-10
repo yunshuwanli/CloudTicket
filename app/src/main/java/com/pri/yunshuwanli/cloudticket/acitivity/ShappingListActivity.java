@@ -20,6 +20,7 @@ import com.pri.yunshuwanli.cloudticket.entry.User;
 import com.pri.yunshuwanli.cloudticket.entry.UserManager;
 import com.pri.yunshuwanli.cloudticket.logger.KLogger;
 import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
+import com.pri.yunshuwanli.cloudticket.utils.PrinterUtil;
 import com.pri.yunshuwanli.cloudticket.utils.QRCodeUtil;
 import com.pri.yunshuwanli.cloudticket.utils.SignUtil;
 
@@ -104,7 +105,7 @@ public class ShappingListActivity extends MActivity implements HttpCallback<JSON
             public void onClick(View v) {
 
                 if (mData != null && mData.size() > 0) {
-                    PrinterBean bean = creatOrderDetail(mData);
+                    PrinterBean bean = PrinterBean.creatOrderDetail(mData);
                     String qrUrl = SignUtil.getQrCodeUrl(bean,UserManager.userSimpeQR());
                     qrUrl = qrUrl.replace("\n","");
                     if (UserManager.userSimpeQR()) {
@@ -142,13 +143,7 @@ public class ShappingListActivity extends MActivity implements HttpCallback<JSON
         HttpClientProxy.getInstance().postJSONAsyn(url, 2, jsonpar, this);
     }
 
-    private PrinterBean creatOrderDetail(List<User.SpListBean> list) {
-        OrderInfo info = new OrderInfo();
-        info.setOrderNo(OrderInfo.getOderID());
-        info.setOrderDate(DateUtil.getTodayDate3());
-        PrinterBean bean = new PrinterBean(info, list);
-        return bean;
-    }
+
 
 
     String getTotalPrice() {
@@ -170,7 +165,7 @@ public class ShappingListActivity extends MActivity implements HttpCallback<JSON
             if (result.optString("code").equals("0000")) {
                 try {
                     String str = result.optJSONObject("data").optString("shortUrl");
-                    gotoPrint(SignUtil.getShortUrl(str), creatOrderDetail(mData));
+                    gotoPrint(SignUtil.getShortUrl(str), PrinterBean.creatOrderDetail(mData));
                 }catch (Exception e){
 
                     KLogger.e(TAG, "-----长连接转短连接json解析失败: " +

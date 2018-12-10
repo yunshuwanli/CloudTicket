@@ -52,7 +52,7 @@ public class BitmapUtils {
     /**
      * 停车场小票
      */
-    public static Bitmap getTicktBitmap(Activity context, OrderInfo order) {
+    public static Bitmap getTicktBitmap(Activity context, OrderInfo order,String url) {
         if (context == null || order == null) return null;
         DisplayMetrics metric = new DisplayMetrics();
         context.getWindowManager().getDefaultDisplay().getMetrics(metric);
@@ -73,9 +73,9 @@ public class BitmapUtils {
         tv_time.setText(order.getOrderDate().split(" ")[1]);
         tv_carNo.setText(order.getCarNo());
         tv_price.setText(String.valueOf(order.getTotalAmount()));
-        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(SignUtil.getQrCodeUrl(new PrinterBean(order, null),false), width, width);
+        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(url, width, width);
         iv_Code.setImageBitmap(bitmap);
-        layoutView(view, width, height);//去到指定view大小的函数
+        layoutView(view, width, height * 5 / 4);//去到指定view大小的函数
         return loadBitmapFromView(view);
     }
 
@@ -108,10 +108,10 @@ public class BitmapUtils {
             }
 
         }
-        tv_amount.setText(String.valueOf(new BigDecimal(totalAmount).setScale(2,BigDecimal.ROUND_HALF_UP))+"元");
-        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(url, width*3/4, width*3/4);
+        tv_amount.setText(String.valueOf(new BigDecimal(totalAmount).setScale(2, BigDecimal.ROUND_HALF_UP)) + "元");
+        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(url, width * 3 / 4, width * 3 / 4);
         iv_Code.setImageBitmap(bitmap);
-        layoutView(view, width, height*9/5);//去到指定view大小的函数
+        layoutView(view, width, height * 9 / 5);//去到指定view大小的函数
         return loadBitmapFromView(view);
     }
 
@@ -136,7 +136,7 @@ public class BitmapUtils {
         tv_time.setText(order.getOrderDate().split(" ")[1]);
         tv_carNo.setText(order.getCarNo());
         tv_price.setText(String.valueOf(order.getTotalAmount()));
-        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(SignUtil.getQrCodeUrl(new PrinterBean(order, null),false), width, width);
+        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(SignUtil.getQrCodeUrl(new PrinterBean(order, null), false), width, width);
         iv_Code.setImageBitmap(bitmap);
         layoutView(view, width, height);//去到指定view大小的函数
         return loadBitmapFromView(view);

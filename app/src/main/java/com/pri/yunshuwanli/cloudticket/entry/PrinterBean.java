@@ -1,5 +1,7 @@
 package com.pri.yunshuwanli.cloudticket.entry;
 
+import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
+
 import java.util.List;
 
 public class PrinterBean {
@@ -10,4 +12,13 @@ public class PrinterBean {
 
     public OrderInfo info;
     public List<User.SpListBean> list;
+
+
+    public static PrinterBean creatOrderDetail(List<User.SpListBean> list) {
+        OrderInfo info = new OrderInfo();
+        info.setOrderNo(OrderInfo.getOderID());
+        info.setOrderDate(DateUtil.getTodayDate3());
+        PrinterBean bean = new PrinterBean(info, list);
+        return bean;
+    }
 }

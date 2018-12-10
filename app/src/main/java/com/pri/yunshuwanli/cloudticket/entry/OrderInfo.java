@@ -10,6 +10,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
 import com.pri.yunshuwanli.cloudticket.utils.crc.Order;
+import com.pri.yunshuwanli.cloudticket.utils.crc.YwxException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -213,10 +214,22 @@ public class OrderInfo implements Parcelable {
         OrderInfo info = new OrderInfo();
         info.setCarNo(order.getPlateNumber());
 //        info.setPayType(order.getPayType());
-        info.setTotalAmount(order.getPayAmount());
+        info.setTotalAmount(order.getPayAmount()/100);
         info.setOrderDate(DateUtil.getTodayDate());
         info.setOrderNo(OrderInfo.getOderID());
 //        info.setRemark();
         return info;
     }
-}
+
+    public static void main(String[] args)  {
+        long pay1 = 100012;
+        long pay2 = 9999;
+
+        double dpay = pay1/100;
+        double dpay2= pay2/100;
+
+        System.out.println("" +dpay );
+        System.out.println("" +dpay2 );
+    }
+
+    }

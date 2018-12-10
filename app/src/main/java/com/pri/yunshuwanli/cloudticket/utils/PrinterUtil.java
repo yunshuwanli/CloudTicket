@@ -64,10 +64,11 @@ public class PrinterUtil {
         return false;
     }
 
-    public static int startCarPrinter(Activity activity, OrderInfo info) {
-        Bitmap bitmap = BitmapUtils.getTicktBitmap(activity, info);
+    public static int startCarPrinter(Activity activity, OrderInfo info,String url) {
+        Bitmap bitmap = BitmapUtils.getTicktBitmap(activity, info,url);
         PrinterTester.getInstance().printBitmap(bitmap);
         PrinterTester.getInstance().printStr("\n \n \n \n", null);
+        PrinterTester.getInstance().printStr("\n \n ", null);
 
         final int status = PrinterTester.getInstance().start2();
         KLogger.i(TAG, "-----打印完成状态------：" + status);
