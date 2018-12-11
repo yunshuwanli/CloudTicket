@@ -90,9 +90,6 @@ public class ServerThread implements Runnable {
 
                         if (order == null) return;
 
-                        if(UserManager.userSimpeQR()){
-
-                        }
 
                         // 打印
                        final OrderInfo info = OrderInfo.getOrderInfo(order);

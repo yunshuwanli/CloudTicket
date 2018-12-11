@@ -10,10 +10,8 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
 import com.pri.yunshuwanli.cloudticket.utils.crc.Order;
-import com.pri.yunshuwanli.cloudticket.utils.crc.YwxException;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
