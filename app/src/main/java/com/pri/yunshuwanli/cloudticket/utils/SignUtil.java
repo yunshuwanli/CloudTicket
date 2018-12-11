@@ -75,6 +75,7 @@ public class SignUtil {
             data.put("qt", count);//商品数量数组
         } else { //可视为停车场二维码
             data.put("pr", orderInfo.getTotalAmount());//订单总金额
+            data.put("sp", UserManager.getUser().getDefulteSPDM());//商品代码
         }
         data.put("type", "2");//固定2
         String jsonStr = GsonUtil.GsonString(data);

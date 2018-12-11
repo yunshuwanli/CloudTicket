@@ -48,6 +48,7 @@ public class User implements Serializable{
      * skr : 万松
      ** isStartDWZ : 1
      * spList : [{"spdm":"A","spmc":"珠宝A","spdj":123.444,"sfmrsp":"1"},{"spdm":"B","spmc":"珠宝B","spdj":123.444,"sfmrsp":"0"}]
+     * 返回的商品列表包含的商品对象会多个，但是sfmrsp == 默认字段值为1的只有一个
      */
 
 
@@ -134,6 +135,21 @@ public class User implements Serializable{
         this.spList = spList;
     }
 
+
+    /**
+     * 取 返回商品列表中sfmrsp = 1的
+     * 商品代码 spdm
+     * @return
+     */
+    public String getDefulteSPDM(){
+        if(spList==null)return "";
+        for(SpListBean bean:spList){
+            if(bean.getSfmrsp().equals("1") ){
+                return bean.getSpdm();
+            }
+        }
+        return "";
+    }
 
     public static class SpListBean implements Serializable{
         /**

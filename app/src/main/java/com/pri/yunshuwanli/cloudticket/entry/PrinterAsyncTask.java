@@ -51,60 +51,63 @@ public class PrinterAsyncTask extends AsyncTask<OrderInfo, Void, Integer> {
         qrUrl = qrUrl.replace("\n","");
 
         if (UserManager.userSimpeQR()) {
-            Map<String, Object> data = new LinkedHashMap<>();
-            try {
-                data.put("longUrl", URLEncoder.encode(qrUrl,"utf-8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            Map<String, Object> dataWra = new HashMap<>();
-            dataWra.put("appId", UserManager.getUser().getAppId());
-            dataWra.put("sign", SignUtil.getSignStr(data));
-            dataWra.put("data", data);
-            dataWra.put("reqType", "04");
-            String jsonpar = GsonUtil.GsonString(dataWra);
-            String url ;
-            if(App.getApplication().isTestUrl()){
-                url = Contant.TEST_BASE_URL_POS;
-            }else {
-                url = Contant.BASE_URL_POS;
-            }
+           request(qrUrl,new HttpCallback<JSONObject>() {
+               @Override
+               public void onSucceed(int requestId, JSONObject result) {
+                   if (requestId == 2 && result != null) {
+                       if (result.optString("code").equals("0000")) {
+                           try {
+                               String str = result.optJSONObject("data").optString("shortUrl");
+                               resultcode = gotoPrint(SignUtil.getShortUrl(str), infos[0]);
+                           }catch (Exception e){
 
+                               KLogger.e(TAG, "-----长连接转短连接json解析失败: " +
+                                       "\n----- msg: " + result.toString()
+                               );
+                           }
 
-            HttpClientProxy.getInstance().postJSONAsyn(url, 2, jsonpar, new HttpCallback<JSONObject>() {
-                @Override
-                public void onSucceed(int requestId, JSONObject result) {
-                    if (requestId == 2 && result != null) {
-                        if (result.optString("code").equals("0000")) {
-                            try {
-                                String str = result.optJSONObject("data").optString("shortUrl");
-                                resultcode = gotoPrint(SignUtil.getShortUrl(str), infos[0]);
-                            }catch (Exception e){
+                       } else {
+                           ToastUtil.showToast("验签失败，请重试");
+                           KLogger.e(TAG, "-----长连接转短连接失败: " +
+                                   "\n----- msg: " + result.toString()
+                           );
+                       }
+                   }
+               }
 
-                                KLogger.e(TAG, "-----长连接转短连接json解析失败: " +
-                                        "\n----- msg: " + result.toString()
-                                );
-                            }
+               @Override
+               public void onFail(int requestId, String errorMsg) {
 
-                        } else {
-                            ToastUtil.showToast("验签失败，请重试");
-                            KLogger.e(TAG, "-----长连接转短连接失败: " +
-                                    "\n----- msg: " + result.toString()
-                            );
-                        }
-                    }
-                }
-
-                @Override
-                public void onFail(int requestId, String errorMsg) {
-
-                }
-            });
+               }
+           });
         } else {
             resultcode  =gotoPrint(qrUrl,infos[0]);
         }
 
         return resultcode;
+    }
+
+
+    private void request(String orlurl ,HttpCallback<JSONObject> callback){
+        Map<String, Object> data = new LinkedHashMap<>();
+        try {
+            data.put("longUrl", URLEncoder.encode(orlurl,"utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        Map<String, Object> dataWra = new HashMap<>();
+        dataWra.put("appId", UserManager.getUser().getAppId());
+        dataWra.put("sign", SignUtil.getSignStr(data));
+        dataWra.put("data", data);
+        dataWra.put("reqType", "04");
+        String jsonpar = GsonUtil.GsonString(dataWra);
+        String url ;
+        if(App.getApplication().isTestUrl()){
+            url = Contant.TEST_BASE_URL_POS;
+        }else {
+            url = Contant.BASE_URL_POS;
+        }
+        HttpClientProxy.getInstance().postJSONAsyn(url, 2, jsonpar, callback);
     }
 
     private int gotoPrint(String url, OrderInfo bean){

@@ -78,7 +78,7 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
     private OrderDao dao;
     List<OrderInfo> ondayOrders;
 
-
+    ServerThread mServerThread;
     private static Handler mHandle;
 
     private static class ResultHandle extends Handler {
@@ -109,8 +109,8 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
 //        startService(new Intent(getApplicationContext(), DaemonService.class));
         initView();
         mHandle = new ResultHandle(this);
-        ServerThread serverThread = new ServerThread(this, mHandle);
-        new Thread(serverThread).start();
+        mServerThread = new ServerThread(this, mHandle);
+        new Thread(mServerThread).start();
         initDataBase();
     }
 
@@ -365,6 +365,9 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         List<OrderInfo> list = getDao().queryOrderNDayBefore(30);
         if (list != null && list.size() > 0) {
             getDao().deleteNDayBefore(30);
+        }
+        if(mServerThread!=null){
+            mServerThread.destroy();
         }
 
     }
