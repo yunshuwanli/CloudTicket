@@ -212,8 +212,8 @@ public class OrderInfo implements Parcelable {
         OrderInfo info = new OrderInfo();
         info.setCarNo(order.getPlateNumber());
 //        info.setPayType(order.getPayType());
-        info.setTotalAmount(order.getPayAmount()/100);
-        info.setOrderDate(DateUtil.getTodayDate());
+        info.setTotalAmount(order.getPayAmount()/100 );
+        info.setOrderDate(DateUtil.getTodayDate3());
         info.setOrderNo(OrderInfo.getOderID());
 //        info.setRemark();
         return info;

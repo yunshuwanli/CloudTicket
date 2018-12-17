@@ -1,122 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:background="@color/app_white"
+android:orientation="vertical">
+
+
+
+<TextView
+    android:id="@+id/name"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/app_white"
-    android:orientation="vertical">
+    android:layout_alignParentStart="true"
+    android:gravity="center"
+    android:padding="28dp"
+    android:textStyle="bold"
+    android:text="天地软件停车场"
+    android:textColor="@color/tv_text_main"
+    android:textSize="30sp" />
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingBottom="2dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
 
 
     <TextView
-        android:id="@+id/name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:gravity="center"
-        android:padding="10dp"
-        android:text="天地软件停车场"
-        android:textColor="@color/tv_text_main"
-        android:textSize="18sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="2018-09-01"
-                android:textColor="@color/tv_text_black" />
-
-            <TextView
-                android:id="@+id/time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="14:22"
-                android:textColor="@color/tv_text_black" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/carNo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="沪A88888"
-            android:textColor="@color/tv_text_black"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/price"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="15.00"
-            android:textColor="@color/tv_text_black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-
-    </LinearLayout>
+        android:text="订单日期："
+        android:textColor="@color/tv_text_black"
+        android:textSize="22sp" />
 
     <TextView
-        android:id="@+id/hint"
+        android:id="@+id/order_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rl1"
-        android:padding="10dp"
-        android:text="使用支付宝或微信扫描下方二维码（有效期30天），根据指引步骤开具您的增值税电子普通发票"
+        android:gravity="center"
+        android:text="15.00"
         android:textColor="@color/tv_text_black"
-        android:textSize="18sp" />
+        android:textSize="22sp" />
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/qr_code"
+
+</LinearLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingBottom="2dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        app:srcCompat="@mipmap/ic_launcher" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/app_bg2" />
+        android:gravity="center"
+        android:text="车  牌  号："
+        android:textColor="@color/tv_text_black"
+        android:textSize="22sp" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/order_numb"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:padding="10dp"
-        android:text="关注微信公众号'容津信息'，及时获取发票信息使用支付宝开具电子发票可以获得蚂蚁森林5g能量"
+        android:gravity="center"
+        android:text="沪A67687"
         android:textColor="@color/tv_text_black"
-        android:textSize="18sp"
-       />
+        android:textSize="22sp" />
+
+
+</LinearLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingBottom="2dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="技术支持：上海容津信息技术有限公司"
+        android:gravity="center"
+        android:text="订单金额："
         android:textColor="@color/tv_text_black"
-        android:textSize="18sp"
-        />
+        android:textSize="22sp" />
+
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/order_amount"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="咨询电话：021-3356700"
+        android:gravity="center"
+        android:text="15.00"
         android:textColor="@color/tv_text_black"
-        android:textSize="18sp"
-        />
+        android:textSize="22sp" />
+
+
+</LinearLayout>
+
+<View
+    android:layout_width="match_parent"
+    android:layout_height="10dp"
+    android:layout_margin="10dp"
+    android:background="@drawable/line_dashes" />
+
+<com.pri.yunshuwanli.cloudticket.view.JustifyTextView
+    android:id="@+id/hint"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/rl1"
+    android:lineSpacingExtra="10dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:text="使用支付宝或微信扫描下方二维码（有效期30天），根据指引步骤开具您的增值税电子普通发票。"
+    android:textColor="@color/tv_text_black"
+    android:layout_marginBottom="30dp"
+    android:textSize="22sp" />
+
+<android.support.v7.widget.AppCompatImageView
+    android:id="@+id/qr_code"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    app:srcCompat="@mipmap/ic_serch" />
+
+
+<com.pri.yunshuwanli.cloudticket.view.JustifyTextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:lineSpacingExtra="10dp"
+    android:layout_marginTop="30dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:text="1、用支付宝「扫一扫」开票。抽取现金红包，还可以获得蚂蚁森林绿色能量。"
+    android:textColor="@color/tv_text_black"
+    android:textSize="22sp" />
+<com.pri.yunshuwanli.cloudticket.view.JustifyTextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:lineSpacingExtra="10dp"
+    android:layout_marginTop="10dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:text="2、用微信「扫一扫」开票。关注“容津信息”公众号，获取发票整体解决方案。"
+    android:textColor="@color/tv_text_black"
+    android:textSize="22sp" />
+
+
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:lineSpacingExtra="5dp"
+    android:layout_marginTop="25dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:text="技术支持：上海容津信息技术有限公司"
+    android:textColor="@color/tv_text_black"
+    android:textSize="22sp" />
+
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:lineSpacingExtra="5dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:text="咨询电话：021-33566700"
+    android:textColor="@color/tv_text_black"
+    android:textSize="22sp" />
+
 </LinearLayout>

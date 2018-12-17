@@ -52,30 +52,27 @@ public class BitmapUtils {
     /**
      * 停车场小票
      */
-    public static Bitmap getTicktBitmap(Activity context, OrderInfo order,String url) {
+    public static Bitmap getTicktBitmap(Activity context, OrderInfo order, String url) {
         if (context == null || order == null) return null;
         DisplayMetrics metric = new DisplayMetrics();
         context.getWindowManager().getDefaultDisplay().getMetrics(metric);
         int width = metric.widthPixels;     // 屏幕宽度（像素）
         int height = metric.heightPixels;   // 屏幕高度（像素）
         View view = LayoutInflater.from(context).inflate(R.layout.ticket_layout, null, false);
+        TextView tv_date = view.findViewById(R.id.order_date);
         TextView tv_name = view.findViewById(R.id.name);
-        TextView tv_date = view.findViewById(R.id.date);
-        TextView tv_time = view.findViewById(R.id.time);
-        TextView tv_carNo = view.findViewById(R.id.carNo);
-        TextView tv_price = view.findViewById(R.id.price);
-//        TextView tv_hint = view.findViewById(R.id.hint);
+        TextView tv_carNo = view.findViewById(R.id.order_numb);
+        TextView tv_price = view.findViewById(R.id.order_amount);
         ImageView iv_Code = view.findViewById(R.id.qr_code);
 
-
+        tv_date.setText(DateUtil.getTodayDate2());
         tv_name.setText(UserManager.getUser().getKpdmc());
-        tv_date.setText(order.getOrderDate().split(" ")[0]);
-        tv_time.setText(order.getOrderDate().split(" ")[1]);
         tv_carNo.setText(order.getCarNo());
-        tv_price.setText(String.valueOf(order.getTotalAmount()));
-        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(url, width, width);
+        BigDecimal tataBig = new BigDecimal(order.getTotalAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+        tv_price.setText(String.valueOf(tataBig + "元"));
+        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(url, width * 3 / 4, width * 3 / 4);
         iv_Code.setImageBitmap(bitmap);
-        layoutView(view, width, height * 5 / 4);//去到指定view大小的函数
+        layoutView(view, width, height * 9 / 5);//去到指定view大小的函数
         return loadBitmapFromView(view);
     }
 
@@ -108,37 +105,11 @@ public class BitmapUtils {
             }
 
         }
-        tv_amount.setText(String.valueOf(new BigDecimal(totalAmount).setScale(2, BigDecimal.ROUND_HALF_UP)) + "元");
+        tv_amount.setText(
+                String.valueOf(new BigDecimal(totalAmount).setScale(2, BigDecimal.ROUND_HALF_UP)+"元"));
         Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(url, width * 3 / 4, width * 3 / 4);
         iv_Code.setImageBitmap(bitmap);
         layoutView(view, width, height * 9 / 5);//去到指定view大小的函数
-        return loadBitmapFromView(view);
-    }
-
-    public static Bitmap getTicketBillingBitmap(Activity context, OrderInfo order) {
-        if (context == null || order == null) return null;
-        DisplayMetrics metric = new DisplayMetrics();
-        context.getWindowManager().getDefaultDisplay().getMetrics(metric);
-        int width = metric.widthPixels;     // 屏幕宽度（像素）
-        int height = metric.heightPixels;   // 屏幕高度（像素）
-        View view = LayoutInflater.from(context).inflate(R.layout.ticket_layout, null, false);
-        TextView tv_name = view.findViewById(R.id.name);
-        TextView tv_date = view.findViewById(R.id.date);
-        TextView tv_time = view.findViewById(R.id.time);
-        TextView tv_carNo = view.findViewById(R.id.carNo);
-        TextView tv_price = view.findViewById(R.id.price);
-//        TextView tv_hint = view.findViewById(R.id.hint);
-        ImageView iv_Code = view.findViewById(R.id.qr_code);
-
-
-        tv_name.setText(UserManager.getUser().getKpdmc());
-        tv_date.setText(order.getOrderDate().split(" ")[0]);
-        tv_time.setText(order.getOrderDate().split(" ")[1]);
-        tv_carNo.setText(order.getCarNo());
-        tv_price.setText(String.valueOf(order.getTotalAmount()));
-        Bitmap bitmap = QRCodeUtil.createQRCodeBitmap(SignUtil.getQrCodeUrl(new PrinterBean(order, null), false), width, width);
-        iv_Code.setImageBitmap(bitmap);
-        layoutView(view, width, height);//去到指定view大小的函数
         return loadBitmapFromView(view);
     }
 
