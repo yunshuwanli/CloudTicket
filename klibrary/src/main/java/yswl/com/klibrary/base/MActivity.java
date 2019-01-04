@@ -28,6 +28,7 @@ public class MActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
@@ -39,4 +40,7 @@ public class MActivity extends BaseActivity {
         intent.setData(url);
         context.startActivity(intent);
     }
+
+
+
 }

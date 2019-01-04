@@ -4,6 +4,8 @@ import com.pri.yunshuwanli.cloudticket.utils.DateUtil;
 
 import java.util.List;
 
+import yswl.com.klibrary.http.HttpClientProxy;
+
 public class PrinterBean {
     public PrinterBean(OrderInfo info, List<User.SpListBean> list) {
         this.info = info;

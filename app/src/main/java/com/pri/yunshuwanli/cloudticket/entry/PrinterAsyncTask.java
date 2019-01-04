@@ -60,13 +60,14 @@ public class PrinterAsyncTask extends AsyncTask<OrderInfo, Void, Integer> {
                                String str = result.optJSONObject("data").optString("shortUrl");
                                resultcode = gotoPrint(SignUtil.getShortUrl(str), infos[0]);
                            }catch (Exception e){
-
+                               resultcode = -9999;
                                KLogger.e(TAG, "-----长连接转短连接json解析失败: " +
                                        "\n----- msg: " + result.toString()
                                );
                            }
 
                        } else {
+                           resultcode = -9999;
                            ToastUtil.showToast("验签失败，请重试");
                            KLogger.e(TAG, "-----长连接转短连接失败: " +
                                    "\n----- msg: " + result.toString()
@@ -77,7 +78,7 @@ public class PrinterAsyncTask extends AsyncTask<OrderInfo, Void, Integer> {
 
                @Override
                public void onFail(int requestId, String errorMsg) {
-
+                   resultcode = -9999;
                }
            });
         } else {

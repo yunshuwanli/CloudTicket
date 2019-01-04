@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pri.yunshuwanli.cloudticket.App;
 import com.pri.yunshuwanli.cloudticket.Contant;
@@ -41,6 +42,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import yswl.com.klibrary.MApplication;
 import yswl.com.klibrary.base.MActivity;
 import yswl.com.klibrary.http.CallBack.OrderHttpCallBack;
 import yswl.com.klibrary.http.HttpClientProxy;
@@ -67,12 +69,10 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
     RefreshLayout refreshLayout;
     RecordListAdapter adapter;
     static final List<String> items = new ArrayList<>(2);
-    static int i = 0;
 
     static {
         items.add("上传日志");
         items.add("系统信息");
-        i = new Random(100).nextInt();
     }
 
     private OrderDao dao;
@@ -91,12 +91,22 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == 1) {
-                OrderInfo info = (OrderInfo) msg.obj;
-                if (info != null) {
-                    wAcitvity.get().requestSaveOrderInfo(info, false);
-                }
+            switch (msg.what) {
+                case EXITWHAT:
+                    Activity activity = wAcitvity.get();
+                    if (activity != null) {
+                        Toast.makeText(activity, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case 1:
+                    OrderInfo info = (OrderInfo) msg.obj;
+                    if (info != null) {
+                        wAcitvity.get().requestSaveOrderInfo(info, false);
+                    }
+                    break;
+
             }
+
 
         }
     }
@@ -257,10 +267,11 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(Intent.ACTION_MAIN);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.addCategory(Intent.CATEGORY_HOME);
-        startActivity(i);
+//        Intent i = new Intent(Intent.ACTION_MAIN);
+//        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        i.addCategory(Intent.CATEGORY_HOME);
+//        startActivity(i);
+        exit();
     }
 
     @Override
@@ -366,9 +377,41 @@ public class MainActivity extends MActivity implements View.OnClickListener, Ord
         if (list != null && list.size() > 0) {
             getDao().deleteNDayBefore(30);
         }
-        if(mServerThread!=null){
+        if (mServerThread != null) {
             mServerThread.destroy();
         }
 
     }
+
+
+    private long exitTime = 0;
+    public static final int EXITWHAT = 10086;
+    public static final int EixtDely = 1000;
+
+    public void exit() {
+        if ((System.currentTimeMillis() - exitTime) > EixtDely) {
+            mHandle.sendEmptyMessage(EXITWHAT);
+            exitTime = System.currentTimeMillis();
+        } else {
+            mHandle.removeMessages(EXITWHAT);
+            MApplication.AppExit(this);
+        }
+    }
+
+    static class MyHandler extends Handler {
+        WeakReference<Activity> weak = null;
+
+        public MyHandler(Activity activity) {
+            weak = new WeakReference<Activity>(activity);
+        }
+
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what) {
+
+            }
+        }
+
+        ;
+    }
+
 }

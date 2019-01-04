@@ -72,7 +72,7 @@ public class ServerThread implements Runnable {
                 //把客户端放入客户端集合中
 
                 InputStream is = client.getInputStream();
-               final OutputStream os = client.getOutputStream();
+                final OutputStream os = client.getOutputStream();
                 // 接下来考虑输入流的读取显示到PC端和返回是否收到
                 byte[] buffer = new byte[512];
                 int len;
@@ -81,7 +81,7 @@ public class ServerThread implements Runnable {
                     L.i(TAG, "-----获取到数据为----" + text);
 
                     if (!TextUtils.isEmpty(text) && text.startsWith("AAA5") && text.endsWith("CD")) {
-                      Order order = null;
+                        Order order = null;
                         try {
                             order = CRCDataUtils.decode(text);
                         } catch (YwxException e) {
@@ -92,25 +92,26 @@ public class ServerThread implements Runnable {
 
 
                         // 打印
-                       final OrderInfo info = OrderInfo.getOrderInfo(order);
+                        final OrderInfo info = OrderInfo.getOrderInfo(order);
 //                        PrinterUtil.initPrinter(App.getIdal());
 //                        int errorCode = PrinterUtil.startCarPrinter(activity, info);
-                       new PrinterAsyncTask(activity, new PrinterAsyncTask.CallBack() {
-                           @Override
-                           public void onCallBack(int errorCode) {
-                               mErrorCode = errorCode;
-                               if (errorCode == 0) {
-                                   //通知handle 请求服务
-                                   Message message = Message.obtain();
-                                   message.obj = info;
-                                   message.what = 1;
-                                   handler.sendMessage(message);
-                               }
-                               //回执
+                        new PrinterAsyncTask(activity, new PrinterAsyncTask.CallBack() {
+                            @Override
+                            public void onCallBack(int errorCode) {
+                                mErrorCode = errorCode;
+                                if (errorCode == 0) {
+                                    //通知handle 请求服务
+                                    Message message = Message.obtain();
+                                    message.obj = info;
+                                    message.what = 1;
+                                    handler.sendMessage(message);
+                                }
+                                //回执
 
-                           }
-                       }).execute(info);
-                         result = CRCDataUtils.encodeResult(order, mErrorCode);
+                            }
+                        }).execute(info);
+
+                        result = CRCDataUtils.encodeResult(order, mErrorCode);
                         os.write(result.getBytes());
                         L.i(TAG, "-----回执----" + result);
 
